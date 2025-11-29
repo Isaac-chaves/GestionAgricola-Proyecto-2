@@ -46,14 +46,6 @@ public class Cultivo {
         return fechaCosecha;
     }
 
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
-    }
-
     public void setTipo(String tipo) {
         this.tipo = tipo;
     }
@@ -88,5 +80,5 @@ public class Cultivo {
     @Override
     public String toString() {
         return id + " - " + nombre + " (" + tipo + ")";
-    }
+    }  
 } 
