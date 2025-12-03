@@ -23,7 +23,7 @@ public class DatosProduccion {
         this.id = id;
         this.cultivo = cultivo;
         this.fechaCosecha = fechaCosecha;
-        this.cantidadRecolectadaKg = cantidadRecolectadaKg;
+        this.cantidadRecolectadaKg = 0;
         this.Calidad = calidadProductoFinalKg;
         this.destino = destino;
     }
