@@ -8,19 +8,26 @@ package Modelo.Usuarios;
  *
  * @author UTN
  */
-public class Trabajador extends Persona{
+public class Trabajador {
     private int cedula;
     private String puesto;
     private String horario;
     private double salario;
+     private String Nombre;
+    private String Correo;
+    private int  Telefono;
 
-    public Trabajador(String puesto, String horario, double salario, int cedula, String Nombre, String Correo, int Telefono) {
-        super(Nombre, Correo, Telefono);
+    public Trabajador(int cedula, String puesto, String horario, double salario, String Nombre, String Correo, int Telefono) {
+        this.cedula = cedula;
         this.puesto = puesto;
         this.horario = horario;
         this.salario = salario;
+        this.Nombre = Nombre;
+        this.Correo = Correo;
+        this.Telefono = Telefono;
     }
-    
+
+
    public Trabajador() {
         super();
     }
@@ -34,6 +41,30 @@ public class Trabajador extends Persona{
 
     public double getSalario() {
         return salario;
+    }
+
+    public int getCedula() {
+        return cedula;
+    }
+
+    public String getNombre() {
+        return Nombre;
+    }
+
+    public String getCorreo() {
+        return Correo;
+    }
+
+    public int getTelefono() {
+        return Telefono;
+    }
+
+    public void setCorreo(String Correo) {
+        this.Correo = Correo;
+    }
+
+    public void setTelefono(int Telefono) {
+        this.Telefono = Telefono;
     }
 
     public void setPuesto(String puesto) {
