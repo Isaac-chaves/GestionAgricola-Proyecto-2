@@ -4,16 +4,19 @@
  */
 package Vista;
 
+import Vista.AgregarJdialog.AgregarCultivo;
+import Vista.EditarJdialog.EditarCultivo;
+
 /**
  *
  * @author isaac
  */
-public class GestionProducto extends javax.swing.JInternalFrame {
+public class GestionCultivo extends javax.swing.JInternalFrame {
 
     /**
      * Creates new form Empleados
      */
-    public GestionProducto() {
+    public GestionCultivo() {
         initComponents();
     }
 
@@ -28,33 +31,35 @@ public class GestionProducto extends javax.swing.JInternalFrame {
 
         jPanel1 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        TablaEmpleados = new javax.swing.JTable();
+        Tablacultivo = new javax.swing.JTable();
         jTextField1 = new javax.swing.JTextField();
-        jButton2 = new javax.swing.JButton();
+        btnEditar = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
-        jButton1 = new javax.swing.JButton();
+        btnAgregar = new javax.swing.JButton();
 
         setClosable(true);
         setForeground(java.awt.Color.black);
+        setResizable(true);
+        setTitle("Gestión  de Cultivo");
 
         jPanel1.setBackground(new java.awt.Color(255, 153, 153));
 
-        TablaEmpleados.setModel(new javax.swing.table.DefaultTableModel(
+        Tablacultivo.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null}
             },
             new String [] {
-                "Id", "Nombre", "Capacidad Max", "Producto "
+                "Id", "Nombre", "Tipo", "Area sembrada", "Estado Crecimiento"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
+                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.Object.class
             };
             boolean[] canEdit = new boolean [] {
-                false, false, false, false
+                false, false, false, false, false
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -65,21 +70,24 @@ public class GestionProducto extends javax.swing.JInternalFrame {
                 return canEdit [columnIndex];
             }
         });
-        TablaEmpleados.getTableHeader().setReorderingAllowed(false);
-        jScrollPane1.setViewportView(TablaEmpleados);
-        if (TablaEmpleados.getColumnModel().getColumnCount() > 0) {
-            TablaEmpleados.getColumnModel().getColumn(0).setResizable(false);
-            TablaEmpleados.getColumnModel().getColumn(1).setResizable(false);
-            TablaEmpleados.getColumnModel().getColumn(2).setResizable(false);
-            TablaEmpleados.getColumnModel().getColumn(3).setResizable(false);
+        Tablacultivo.setColumnSelectionAllowed(true);
+        Tablacultivo.getTableHeader().setReorderingAllowed(false);
+        jScrollPane1.setViewportView(Tablacultivo);
+        Tablacultivo.getColumnModel().getSelectionModel().setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        if (Tablacultivo.getColumnModel().getColumnCount() > 0) {
+            Tablacultivo.getColumnModel().getColumn(0).setResizable(false);
+            Tablacultivo.getColumnModel().getColumn(1).setResizable(false);
+            Tablacultivo.getColumnModel().getColumn(2).setResizable(false);
+            Tablacultivo.getColumnModel().getColumn(3).setResizable(false);
+            Tablacultivo.getColumnModel().getColumn(4).setResizable(false);
         }
 
         jTextField1.setText("Buscar");
 
-        jButton2.setText("Editar");
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
+        btnEditar.setText("Editar");
+        btnEditar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
+                btnEditarActionPerformed(evt);
             }
         });
 
@@ -90,7 +98,12 @@ public class GestionProducto extends javax.swing.JInternalFrame {
             }
         });
 
-        jButton1.setText("Agregar");
+        btnAgregar.setText("Agregar");
+        btnAgregar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAgregarActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -102,11 +115,11 @@ public class GestionProducto extends javax.swing.JInternalFrame {
                         .addContainerGap()
                         .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 397, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(266, 266, 266)
-                        .addComponent(jButton1))
+                        .addComponent(btnAgregar))
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 742, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jButton2)
+                    .addComponent(btnEditar)
                     .addComponent(jButton3))
                 .addContainerGap(11, Short.MAX_VALUE))
         );
@@ -118,11 +131,11 @@ public class GestionProducto extends javax.swing.JInternalFrame {
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jButton1))
+                            .addComponent(btnAgregar))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 392, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jButton2)
+                        .addComponent(btnEditar)
                         .addGap(1, 1, 1)
                         .addComponent(jButton3)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -146,15 +159,28 @@ public class GestionProducto extends javax.swing.JInternalFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_jButton3ActionPerformed
 
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButton2ActionPerformed
+    private void btnEditarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditarActionPerformed
+       
+        
+        EditarCultivo e = new EditarCultivo(null, true);
+        e.setLocationRelativeTo(null);
+        e.setVisible(true);
+        
+    }//GEN-LAST:event_btnEditarActionPerformed
+
+    private void btnAgregarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarActionPerformed
+        
+    AgregarCultivo agregarCultivo = new AgregarCultivo(null, true);
+    agregarCultivo.setLocationRelativeTo(null);
+    agregarCultivo.setVisible(true);
+    
+    }//GEN-LAST:event_btnAgregarActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JTable TablaEmpleados;
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
+    private javax.swing.JTable Tablacultivo;
+    private javax.swing.JButton btnAgregar;
+    private javax.swing.JButton btnEditar;
     private javax.swing.JButton jButton3;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;

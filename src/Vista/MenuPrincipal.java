@@ -9,40 +9,74 @@ package Vista;
  * @author isaac
  */
 public class MenuPrincipal extends javax.swing.JFrame {
+
+    private javax.swing.JPanel glassPaneBlocker;
     GestionProduccion ventanaProduccion;
     GestionAlmacenamiento ventanaAlmacen;
     GestionEmpleados ventanaEmpleados;
-    GestionProducto ventanaProducto; 
-    IniciarSession ventanaLogin;
+    GestionCultivo ventanaProducto;
     AyudaDialog ventanaAyuda;
     GestionDistribucion ventanaDistribucion;
-    
+
     /**
      * Creates new form Gui
      */
     public MenuPrincipal() {
         initComponents();
-       inicializarventanas();
+        initializeGlassPane(); // NUEVA LLAMADA
+        inicializarventanas();
+        this.setExtendedState(MAXIMIZED_BOTH);
     }
 
-    public void inicializarventanas(){
-       ventanaProduccion = new GestionProduccion();
+    public void inicializarventanas() {
+        ventanaProduccion = new GestionProduccion();
         ventanaAlmacen = new GestionAlmacenamiento();
         ventanaEmpleados = new GestionEmpleados();
-        ventanaProducto = new GestionProducto();
-        ventanaLogin = new IniciarSession();
+        ventanaProducto = new GestionCultivo();
         ventanaAyuda = new AyudaDialog(this, true);
         ventanaDistribucion = new GestionDistribucion();
     }
+
     private void mostrarVentana(javax.swing.JInternalFrame ventana) {
-        if (ventana.getParent() == null) { 
+        if (ventana.getParent() == null) {
             jDesktopPane.add(ventana);
         }
         ventana.setVisible(true);
         try {
             ventana.setSelected(true);
-        } catch (java.beans.PropertyVetoException e) {}
+        } catch (java.beans.PropertyVetoException e) {
+        }
     }
+
+    private void initializeGlassPane() {
+        glassPaneBlocker = new javax.swing.JPanel();
+        glassPaneBlocker.setOpaque(false);
+        glassPaneBlocker.addMouseListener(new java.awt.event.MouseAdapter() {
+        });
+        glassPaneBlocker.addKeyListener(new java.awt.event.KeyAdapter() {
+        });
+        glassPaneBlocker.setVisible(false);
+        this.setGlassPane(glassPaneBlocker);
+    }
+
+    public void mostrarVentanaLogin() {
+
+        glassPaneBlocker.setVisible(true);
+
+        IniciarSession loginDialog = new IniciarSession(this, false);
+
+        loginDialog.addWindowListener(new java.awt.event.WindowAdapter() {
+            @Override
+            public void windowClosed(java.awt.event.WindowEvent e) {
+                if (glassPaneBlocker != null) {
+                    glassPaneBlocker.setVisible(false);
+                }
+            }
+        });
+
+        loginDialog.setVisible(true);
+    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -116,7 +150,7 @@ public class MenuPrincipal extends javax.swing.JFrame {
         jMenu1.setText("Almacenamiento");
 
         jMenuproducto.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_2, java.awt.event.InputEvent.ALT_DOWN_MASK));
-        jMenuproducto.setText("Producto");
+        jMenuproducto.setText("Cultivo/Producto");
         jMenuproducto.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jMenuproductoActionPerformed(evt);
@@ -197,52 +231,50 @@ public class MenuPrincipal extends javax.swing.JFrame {
     private void jMenuDistribuccionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuDistribuccionActionPerformed
         // TODO add your handling code here:
         mostrarVentana(ventanaDistribucion);
-        
+
     }//GEN-LAST:event_jMenuDistribuccionActionPerformed
 
     private void jmenuProduccionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmenuProduccionActionPerformed
-        
+
         mostrarVentana(ventanaProduccion);
-        
+
     }//GEN-LAST:event_jmenuProduccionActionPerformed
 
     private void jMenuproductoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuproductoActionPerformed
         // TODO add your handling code here:
         mostrarVentana(ventanaProducto);
-        
+
     }//GEN-LAST:event_jMenuproductoActionPerformed
 
     private void jMenuAlmacenesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuAlmacenesActionPerformed
-       
+
         mostrarVentana(ventanaAlmacen);
-        
+
     }//GEN-LAST:event_jMenuAlmacenesActionPerformed
 
     private void cerrarSessionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cerrarSessionActionPerformed
-        
+
         ventanaProduccion.dispose();
-    ventanaAlmacen.dispose();
-    ventanaEmpleados.dispose();
-    ventanaProducto.dispose();
-    ventanaDistribucion.dispose();
-    
-    // Mostrar la ventana de Login nuevamente
-    mostrarVentana(ventanaLogin);
-        
+        ventanaAlmacen.dispose();
+        ventanaEmpleados.dispose();
+        ventanaProducto.dispose();
+        ventanaDistribucion.dispose();
+        mostrarVentanaLogin();
+
     }//GEN-LAST:event_cerrarSessionActionPerformed
 
     private void jMenuEmpleadoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuEmpleadoActionPerformed
-        
+
         mostrarVentana(ventanaEmpleados);
-        
+
     }//GEN-LAST:event_jMenuEmpleadoActionPerformed
 
     private void jMenuItem5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem5ActionPerformed
         // TODO add your handling code here:
-        
-        
+
+
     }//GEN-LAST:event_jMenuItem5ActionPerformed
-    
+
     /**
      * @param args the command line arguments
      */
@@ -274,7 +306,12 @@ public class MenuPrincipal extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new MenuPrincipal().setVisible(true);
+                MenuPrincipal principal = new MenuPrincipal();
+                // ESTA LÍNEA DEBE ASEGURARSE DE CERRAR LA APP CUANDO SE CIERRE LA VENTANA PRINCIPAL
+                principal.setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+
+                principal.setVisible(true);
+                principal.mostrarVentanaLogin();
             }
         });
     }

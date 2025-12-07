@@ -4,6 +4,10 @@
  */
 package Vista;
 
+import Vista.AgregarJdialog.AgregarAlmacen;
+import Vista.AgregarJdialog.AgregarCultivo;
+import Vista.EditarJdialog.EditarAlmacen;
+
 /**
  *
  * @author isaac
@@ -28,33 +32,34 @@ public class GestionAlmacenamiento extends javax.swing.JInternalFrame {
 
         jPanel1 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        TablaEmpleados = new javax.swing.JTable();
+        TablaAlmacenamiento = new javax.swing.JTable();
         jTextField1 = new javax.swing.JTextField();
-        jButton2 = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
-        jButton1 = new javax.swing.JButton();
+        btnEditar = new javax.swing.JButton();
+        btnElimanar = new javax.swing.JButton();
+        btnAgregar = new javax.swing.JButton();
 
         setClosable(true);
         setForeground(java.awt.Color.black);
+        setTitle("Gestion Almacenamiento");
 
         jPanel1.setBackground(new java.awt.Color(204, 204, 255));
 
-        TablaEmpleados.setModel(new javax.swing.table.DefaultTableModel(
+        TablaAlmacenamiento.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null}
             },
             new String [] {
-                "Id", "Nombre", "Capacidad Max", "Producto "
+                "Id", "Producto", "Capacidad KG", "Fecha de Ingreso", "Almacen"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
+                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
             };
             boolean[] canEdit = new boolean [] {
-                false, false, false, false
+                false, false, false, false, false
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -65,32 +70,38 @@ public class GestionAlmacenamiento extends javax.swing.JInternalFrame {
                 return canEdit [columnIndex];
             }
         });
-        TablaEmpleados.getTableHeader().setReorderingAllowed(false);
-        jScrollPane1.setViewportView(TablaEmpleados);
-        if (TablaEmpleados.getColumnModel().getColumnCount() > 0) {
-            TablaEmpleados.getColumnModel().getColumn(0).setResizable(false);
-            TablaEmpleados.getColumnModel().getColumn(1).setResizable(false);
-            TablaEmpleados.getColumnModel().getColumn(2).setResizable(false);
-            TablaEmpleados.getColumnModel().getColumn(3).setResizable(false);
+        TablaAlmacenamiento.getTableHeader().setReorderingAllowed(false);
+        jScrollPane1.setViewportView(TablaAlmacenamiento);
+        if (TablaAlmacenamiento.getColumnModel().getColumnCount() > 0) {
+            TablaAlmacenamiento.getColumnModel().getColumn(0).setResizable(false);
+            TablaAlmacenamiento.getColumnModel().getColumn(1).setResizable(false);
+            TablaAlmacenamiento.getColumnModel().getColumn(2).setResizable(false);
+            TablaAlmacenamiento.getColumnModel().getColumn(3).setResizable(false);
+            TablaAlmacenamiento.getColumnModel().getColumn(4).setResizable(false);
         }
 
         jTextField1.setText("Buscar");
 
-        jButton2.setText("Editar");
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
+        btnEditar.setText("Editar");
+        btnEditar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
+                btnEditarActionPerformed(evt);
             }
         });
 
-        jButton3.setText("Eliminar");
-        jButton3.addActionListener(new java.awt.event.ActionListener() {
+        btnElimanar.setText("Eliminar");
+        btnElimanar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton3ActionPerformed(evt);
+                btnElimanarActionPerformed(evt);
             }
         });
 
-        jButton1.setText("Agregar");
+        btnAgregar.setText("Agregar");
+        btnAgregar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAgregarActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -102,12 +113,12 @@ public class GestionAlmacenamiento extends javax.swing.JInternalFrame {
                         .addContainerGap()
                         .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 397, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(266, 266, 266)
-                        .addComponent(jButton1))
+                        .addComponent(btnAgregar))
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 742, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jButton2)
-                    .addComponent(jButton3))
+                    .addComponent(btnEditar)
+                    .addComponent(btnElimanar))
                 .addContainerGap(11, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
@@ -118,13 +129,13 @@ public class GestionAlmacenamiento extends javax.swing.JInternalFrame {
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jButton1))
+                            .addComponent(btnAgregar))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 392, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jButton2)
+                        .addComponent(btnEditar)
                         .addGap(1, 1, 1)
-                        .addComponent(jButton3)))
+                        .addComponent(btnElimanar)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -142,20 +153,32 @@ public class GestionAlmacenamiento extends javax.swing.JInternalFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+    private void btnElimanarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnElimanarActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jButton3ActionPerformed
+    }//GEN-LAST:event_btnElimanarActionPerformed
 
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButton2ActionPerformed
+    private void btnEditarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditarActionPerformed
+
+        EditarAlmacen e = new EditarAlmacen(null, true);
+        e.setLocationRelativeTo(null);
+        e.setVisible(true);
+
+    }//GEN-LAST:event_btnEditarActionPerformed
+
+    private void btnAgregarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarActionPerformed
+
+        AgregarAlmacen e = new AgregarAlmacen(null, true);
+        e.setLocationRelativeTo(null);
+        e.setVisible(true);
+
+    }//GEN-LAST:event_btnAgregarActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JTable TablaEmpleados;
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
+    private javax.swing.JTable TablaAlmacenamiento;
+    private javax.swing.JButton btnAgregar;
+    private javax.swing.JButton btnEditar;
+    private javax.swing.JButton btnElimanar;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTextField jTextField1;
