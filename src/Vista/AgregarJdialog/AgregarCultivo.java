@@ -154,7 +154,39 @@ public class AgregarCultivo extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-this.dispose();        // TODO add your handling code here:
+
+        String id = jTextField3.getText().trim();
+        String nombre = jTextField1.getText().trim();
+        String fechaSiembra = jTextField5.getText().trim();
+        String tipo = jTextField7.getText().trim();
+        String area = jTextField6.getText().trim();
+
+        // Validar campos vacíos
+        if (id.isEmpty() || nombre.isEmpty() || fechaSiembra.isEmpty()
+                || tipo.isEmpty() || area.isEmpty()) {
+
+            javax.swing.JOptionPane.showMessageDialog(this,
+                    "Debe llenar todos los campos",
+                    "Error",
+                    javax.swing.JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        // Validar que el área sembrada sea numérica
+        double areaVal;
+
+        try {
+            areaVal = Double.parseDouble(area);
+        } catch (NumberFormatException e) {
+            javax.swing.JOptionPane.showMessageDialog(this,
+                    "El área sembrada debe ser un número",
+                    "Error",
+                    javax.swing.JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        // Si todo está correcto -> cerrar
+        this.dispose();
     }//GEN-LAST:event_jButton1ActionPerformed
 
     /**

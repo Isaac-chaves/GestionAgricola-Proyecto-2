@@ -55,21 +55,26 @@ public class AgregarDistribucion extends javax.swing.JDialog {
             }
         });
 
-        jLabel1.setText("cantidad");
+        jLabel1.setText("Cantidad");
 
-        jLabel2.setText("cultivo");
+        jLabel2.setText("Cultivo");
 
         jTextField2.setBackground(new java.awt.Color(204, 204, 204));
 
-        jLabel3.setText("destino");
+        jLabel3.setText("Destino");
 
-        jLabel4.setText("Respondable");
+        jLabel4.setText("Responsable");
 
         jTextField4.setBackground(new java.awt.Color(204, 204, 204));
 
-        jLabel5.setText("id del Almacen ");
+        jLabel5.setText("ID del Almacen ");
 
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "2", "1" }));
+        jComboBox1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jComboBox1ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -149,8 +154,43 @@ public class AgregarDistribucion extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-this.dispose();        // TODO add your handling code here:
+ String destino = jTextField1.getText().trim();
+    String cultivo = jTextField3.getText().trim();
+    String cantidadStr = jTextField2.getText().trim();
+    String responsable = jTextField4.getText().trim();
+    String idAlmacen = (String) jComboBox1.getSelectedItem();
+
+    // Validar campos vacíos
+    if (destino.isEmpty() || cultivo.isEmpty() || cantidadStr.isEmpty()
+            || responsable.isEmpty() || idAlmacen == null) {
+
+        javax.swing.JOptionPane.showMessageDialog(this,
+                "Debe llenar todos los campos",
+                "Error",
+                javax.swing.JOptionPane.ERROR_MESSAGE);
+        return;
+    }
+
+    // Validar cantidad numérica
+    double cantidad;
+
+    try {
+        cantidad = Double.parseDouble(cantidadStr);
+    } catch (NumberFormatException e) {
+        javax.swing.JOptionPane.showMessageDialog(this,
+                "La cantidad debe ser un número",
+                "Error",
+                javax.swing.JOptionPane.ERROR_MESSAGE);
+        return;
+    }
+
+    // Si todo está correcto → cerrar
+    this.dispose(); 
     }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jComboBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox1ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jComboBox1ActionPerformed
 
     /**
      * @param args the command line arguments

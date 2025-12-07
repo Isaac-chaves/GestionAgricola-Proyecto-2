@@ -5,6 +5,7 @@
 package Vista.EditarJdialog;
 
 import Vista.AgregarJdialog.*;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -102,8 +103,38 @@ public class EditarAlmacen extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        // TODO add your handling code here:
-        this.dispose();
+        String cantidadStr = jTextField3.getText().trim();
+
+        // Validar vacío
+        if (cantidadStr.isEmpty()) {
+            JOptionPane.showMessageDialog(this,
+                    "Debe ingresar la cantidad del producto.",
+                    "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        // Validar que sea número
+        double cantidad;
+        try {
+            cantidad = Double.parseDouble(cantidadStr);
+            if (cantidad < 0) {
+                JOptionPane.showMessageDialog(this,
+                        "La cantidad no puede ser negativa.",
+                        "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this,
+                    "La cantidad debe ser un número válido.",
+                    "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        // Si todo está bien
+        JOptionPane.showMessageDialog(this,
+                "Cantidad actualizada correctamente.");
+
+        this.dispose();  // cerrar ventana
     }//GEN-LAST:event_jButton1ActionPerformed
 
     /**

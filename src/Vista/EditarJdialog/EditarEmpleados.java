@@ -47,6 +47,11 @@ public class EditarEmpleados extends javax.swing.JDialog {
         jPanel1.setBackground(new java.awt.Color(102, 102, 102));
 
         jTextField1.setBackground(new java.awt.Color(204, 204, 204));
+        jTextField1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jTextField1ActionPerformed(evt);
+            }
+        });
 
         jTextField3.setBackground(new java.awt.Color(204, 204, 204));
 
@@ -156,8 +161,75 @@ public class EditarEmpleados extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-this.dispose();        // TODO add your handling code here:
+        String correo = jTextField1.getText().trim();
+        String telefono = jTextField3.getText().trim();
+        String puesto = jTextField5.getText().trim();
+        String horario = jTextField4.getText().trim();
+        String salarioStr = jTextField2.getText().trim();
+
+        // Validar campos vacíos
+        if (correo.isEmpty() || telefono.isEmpty() || puesto.isEmpty()
+                || horario.isEmpty() || salarioStr.isEmpty()) {
+
+            javax.swing.JOptionPane.showMessageDialog(this,
+                    "Todos los campos deben estar llenos.",
+                    "Error", javax.swing.JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        // Validar correo estilo básico: nombre@dominio.com
+        if (!correo.matches("^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,6}$")) {
+            javax.swing.JOptionPane.showMessageDialog(this,
+                    "El correo debe ser como ejemplo: Usuario@gmail.com",
+                    "Error", javax.swing.JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        // Validar teléfono: solo números
+        if (!telefono.matches("\\d+")) {
+            javax.swing.JOptionPane.showMessageDialog(this,
+                    "El teléfono solo debe contener números.",
+                    "Error", javax.swing.JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        // Validar teléfono: exactamente 8 dígitos
+        if (telefono.length() != 8) {
+            javax.swing.JOptionPane.showMessageDialog(this,
+                    "El teléfono debe tener exactamente 8 dígitos.",
+                    "Error", javax.swing.JOptionPane.ERROR_MESSAGE);
+            return; 
+        }
+
+        // Validar salario numérico
+        double salario;
+        try {
+            salario = Double.parseDouble(salarioStr);
+
+            if (salario <= 0) {
+                javax.swing.JOptionPane.showMessageDialog(this,
+                        "El salario debe ser mayor a 0.",
+                        "Error", javax.swing.JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+        } catch (NumberFormatException e) {
+            javax.swing.JOptionPane.showMessageDialog(this,
+                    "El salario debe ser un número válido.",
+                    "Error", javax.swing.JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        // Si todo está bien
+        javax.swing.JOptionPane.showMessageDialog(this,
+                "Empleado actualizado correctamente ✔️");
+
+        this.dispose();
     }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTextField1ActionPerformed
 
     /**
      * @param args the command line arguments

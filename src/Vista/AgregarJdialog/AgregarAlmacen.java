@@ -107,7 +107,35 @@ public class AgregarAlmacen extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void BtnAgregarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnAgregarActionPerformed
-this.dispose();        // TODO add your handling code here:
+
+    String nombre = jTextField1.getText().trim();
+    String capacidadStr = jTextField2.getText().trim();
+
+    // Validar que no estén vacíos
+    if (nombre.isEmpty() || capacidadStr.isEmpty()) {
+        javax.swing.JOptionPane.showMessageDialog(this,
+                "Debe llenar todos los campos",
+                "Error",
+                javax.swing.JOptionPane.ERROR_MESSAGE);
+        return;
+    }
+
+    // Validar que capacidad sea número
+    double capacidad;
+
+    try {
+        capacidad = Double.parseDouble(capacidadStr);
+    } catch (NumberFormatException e) {
+        javax.swing.JOptionPane.showMessageDialog(this,
+                "La capacidad debe ser un número",
+                "Error",
+                javax.swing.JOptionPane.ERROR_MESSAGE);
+        return;
+    }
+
+    // Si todo está bien, cerrar
+    this.dispose();
+
     }//GEN-LAST:event_BtnAgregarActionPerformed
 
     /**
@@ -149,9 +177,9 @@ this.dispose();        // TODO add your handling code here:
                     }
                 });
                 dialog.setVisible(true);
-            }
+            } 
         });
-    }
+    } 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton BtnAgregar;

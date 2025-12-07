@@ -24,7 +24,6 @@ public class MenuPrincipal extends javax.swing.JFrame {
     public MenuPrincipal() {
         initComponents();
         initializeGlassPane(); // NUEVA LLAMADA
-        inicializarventanas();
         this.setExtendedState(MAXIMIZED_BOTH);
     }
 
