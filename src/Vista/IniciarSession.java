@@ -4,6 +4,10 @@
  */
 package Vista;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import javax.swing.JOptionPane;
+
 /**
  *
  * @author isaac
@@ -21,6 +25,27 @@ public IniciarSession(java.awt.Frame parent, boolean modal) {
     this.setResizable(false);
     this.setLocationRelativeTo(parent);
 }
+
+private boolean esCorreoValido(String email) {
+ String regex = "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,6}$";
+  Pattern pattern = Pattern.compile(regex);
+    Matcher matcher = pattern.matcher(email);
+    return matcher.matches();
+    }
+
+private boolean esContraseniaFuerte(String password) {
+        // Expresión Regular para complejidad
+        String regex = "^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9]).{8,}$";
+        
+        // Nota: Si quieres quitar el requisito de longitud mínima de 8, 
+        // simplemente reemplaza el final de la regex por .*$
+        // Si quieres dejarlo como estaba antes (solo > 8), usa esta regex: ^.{8,}$
+        
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(password);
+        return matcher.matches();
+    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -139,7 +164,19 @@ public IniciarSession(java.awt.Frame parent, boolean modal) {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jFormattedTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jFormattedTextField1ActionPerformed
-        // TODO add your handling code here:
+// Validación en tiempo real (al presionar Enter)
+        String email = jFormattedTextField1.getText().trim();
+        
+        if (!email.isEmpty() && !esCorreoValido(email)) {
+             // El formato del correo es INCORRECTO
+             JOptionPane.showMessageDialog(
+                 this,
+                 "El formato del correo electrónico es incorrecto. Por favor, revísalo.",
+                 "Error de Validación",
+                 JOptionPane.ERROR_MESSAGE
+             );
+             jFormattedTextField1.requestFocus();
+        }
     }//GEN-LAST:event_jFormattedTextField1ActionPerformed
 
     private void jFormattedTextField2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jFormattedTextField2ActionPerformed
@@ -147,16 +184,41 @@ public IniciarSession(java.awt.Frame parent, boolean modal) {
     }//GEN-LAST:event_jFormattedTextField2ActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-
-        String correo = jFormattedTextField1.getText();
-        String contrasenia = jFormattedTextField2.getText();
-        if (correo.trim().isEmpty() || contrasenia.trim().isEmpty()) {
+String correo = jFormattedTextField1.getText().trim();
+        String contrasenia = jFormattedTextField2.getText().trim();
+        
+        
+        // 1. Validar campos vacíos
+        if (correo.isEmpty() || contrasenia.isEmpty()) {
 
             javax.swing.JOptionPane.showMessageDialog(this,
                     "Por favor, complete todos los campos para continuar.",
                     "Campos vacíos",
                     javax.swing.JOptionPane.WARNING_MESSAGE);
+            
+        // 2. Validar formato del correo
+        } else if (!esCorreoValido(correo)) {
+             javax.swing.JOptionPane.showMessageDialog(this,
+                    "El formato del correo electrónico es incorrecto.",
+                    "Error de Formato",
+                    javax.swing.JOptionPane.ERROR_MESSAGE);
+             jFormattedTextField1.requestFocus();
+             
+        // 3. Validar complejidad de la contraseña (¡AQUÍ ESTÁ LA NUEVA VALIDACIÓN!)
+        } else if (!esContraseniaFuerte(contrasenia)) {
+             javax.swing.JOptionPane.showMessageDialog(this,
+                    "La contraseña debe contener:\n"
+                    + "- Al menos una letra mayúscula.\n"
+                    + "- Al menos una letra minúscula.\n"
+                    + "- Al menos un número.\n"
+                    + "- Mínimo 8 caracteres.",
+                    "Contraseña Débil",
+                    javax.swing.JOptionPane.ERROR_MESSAGE);
+             jFormattedTextField2.requestFocus();
+             
+        // 4. Si todas las validaciones pasan
         } else {
+            // Lógica de autenticación exitosa
             this.dispose();
         }
     }//GEN-LAST:event_jButton1ActionPerformed
