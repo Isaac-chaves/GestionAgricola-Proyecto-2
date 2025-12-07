@@ -4,6 +4,8 @@
  */
 package Modelo.Usuarios;
 
+import java.util.HashMap;
+
 /**
  *
  * @author UTN
@@ -14,7 +16,7 @@ public class Usuarios {
     private String contraseña;
     private String rol; 
     private String estado;
- 
+    private static HashMap<String, String> contraseñasMap = new HashMap<>();
    
  public Usuarios() {
         super();
@@ -26,6 +28,7 @@ public Usuarios(int idUsuario, String nombreUsuario, String contraseña, String 
         this.contraseña = contraseña;
         this.rol = rol;
         this.estado = estado;
+        contraseñasMap.put(nombreUsuario, contraseña);
     }
 
     public int getIdUsuario() {
@@ -55,13 +58,39 @@ public Usuarios(int idUsuario, String nombreUsuario, String contraseña, String 
     public void setEstado(String estado) {
         this.estado = estado;
     }
-  public boolean esAdministrador() {
+    
+    public void setContraseña(String nuevaContraseña) {
+        this.contraseña = nuevaContraseña;
+        contraseñasMap.put(this.nombreUsuario, nuevaContraseña);
+    }
+public boolean esAdministrador() {
         return "administrador".equalsIgnoreCase(this.rol);
     }
   
-    public boolean esUsuarioNormal() {
-        return "usuario".equalsIgnoreCase(this.rol);
+public boolean esUsuarioNormal() {
+    return "usuario".equalsIgnoreCase(this.rol);
+} 
+    
+    
+public static void guardarContraseña(String nombreUsuario, String contraseña) {
+        contraseñasMap.put(nombreUsuario, contraseña);
     }
 
-
+ public static String obtenerContraseña(String nombreUsuario) {
+        return contraseñasMap.get(nombreUsuario);
+    }
+ 
+  public static boolean existeUsuario(String nombreUsuario) {
+        return contraseñasMap.containsKey(nombreUsuario);
+    }
+  
+  
+    public static boolean verificarContraseña(String nombreUsuario, String contraseña) {
+        String contraseñaAlmacenada = contraseñasMap.get(nombreUsuario);
+        return contraseñaAlmacenada != null && contraseñaAlmacenada.equals(contraseña);
+    }
+    
+public static HashMap<String, String> getContraseñasMap() {
+        return new HashMap<>(contraseñasMap);
+    }
 }
