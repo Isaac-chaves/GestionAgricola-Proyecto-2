@@ -55,6 +55,13 @@ public Usuarios(int idUsuario, String nombreUsuario, String contraseña, String 
     public void setEstado(String estado) {
         this.estado = estado;
     }
+  public boolean esAdministrador() {
+        return "administrador".equalsIgnoreCase(this.rol);
+    }
+  
+    public boolean esUsuarioNormal() {
+        return "usuario".equalsIgnoreCase(this.rol);
+    }
 
-        
+
 }

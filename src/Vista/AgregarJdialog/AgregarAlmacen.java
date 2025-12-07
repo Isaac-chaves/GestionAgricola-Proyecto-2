@@ -51,13 +51,13 @@ public class AgregarAlmacen extends javax.swing.JDialog {
             }
         });
 
-        jLabel1.setText("Fecha de Siembra");
+        jLabel1.setText("Capacidad en kg");
 
-        jLabel2.setText("Area");
+        jLabel2.setText("id");
 
         jTextField2.setBackground(new java.awt.Color(204, 204, 204));
 
-        jLabel3.setText("Nombre");
+        jLabel3.setText("nombre");
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
