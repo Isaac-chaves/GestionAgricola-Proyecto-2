@@ -23,7 +23,8 @@ public class MenuPrincipal extends javax.swing.JFrame {
      */
     public MenuPrincipal() {
         initComponents();
-        initializeGlassPane(); // NUEVA LLAMADA
+        inicializarventanas();
+        initializeGlassPane();
         this.setExtendedState(MAXIMIZED_BOTH);
     }
 
@@ -37,13 +38,21 @@ public class MenuPrincipal extends javax.swing.JFrame {
     }
 
     private void mostrarVentana(javax.swing.JInternalFrame ventana) {
+        if (ventana == null || ventana.isClosed()) {
+            jDesktopPane.add(ventana);
+        }
+        if (ventana == null) {
+            return;
+        }
         if (ventana.getParent() == null) {
             jDesktopPane.add(ventana);
         }
         ventana.setVisible(true);
+        ventana.toFront();
         try {
             ventana.setSelected(true);
         } catch (java.beans.PropertyVetoException e) {
+            e.printStackTrace();
         }
     }
 
@@ -59,11 +68,8 @@ public class MenuPrincipal extends javax.swing.JFrame {
     }
 
     public void mostrarVentanaLogin() {
-
         glassPaneBlocker.setVisible(true);
-
         IniciarSession loginDialog = new IniciarSession(this, false);
-
         loginDialog.addWindowListener(new java.awt.event.WindowAdapter() {
             @Override
             public void windowClosed(java.awt.event.WindowEvent e) {
@@ -72,7 +78,6 @@ public class MenuPrincipal extends javax.swing.JFrame {
                 }
             }
         });
-
         loginDialog.setVisible(true);
     }
 
@@ -228,7 +233,7 @@ public class MenuPrincipal extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jMenuDistribuccionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuDistribuccionActionPerformed
-        // TODO add your handling code here:
+
         mostrarVentana(ventanaDistribucion);
 
     }//GEN-LAST:event_jMenuDistribuccionActionPerformed
@@ -236,11 +241,10 @@ public class MenuPrincipal extends javax.swing.JFrame {
     private void jmenuProduccionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmenuProduccionActionPerformed
 
         mostrarVentana(ventanaProduccion);
-
     }//GEN-LAST:event_jmenuProduccionActionPerformed
 
     private void jMenuproductoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuproductoActionPerformed
-        // TODO add your handling code here:
+
         mostrarVentana(ventanaProducto);
 
     }//GEN-LAST:event_jMenuproductoActionPerformed
@@ -265,7 +269,6 @@ public class MenuPrincipal extends javax.swing.JFrame {
     private void jMenuEmpleadoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuEmpleadoActionPerformed
 
         mostrarVentana(ventanaEmpleados);
-
     }//GEN-LAST:event_jMenuEmpleadoActionPerformed
 
     private void jMenuItem5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem5ActionPerformed

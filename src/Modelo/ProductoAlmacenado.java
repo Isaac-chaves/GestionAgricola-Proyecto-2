@@ -45,7 +45,7 @@ public class ProductoAlmacenado {
     public ProductoAlmacenado(int id, Cultivo cultivo, double cantidadKg, LocalDate fechaIngreso, LocalDate fechaEgreso) {
         this.id = id;
         this.cultivo = cultivo;
-        this.cantidadKg = 0;
+        this.cantidadKg = cantidadKg;
         this.fechaIngreso = fechaIngreso;
         this.fechaEgreso = fechaEgreso;
     }  

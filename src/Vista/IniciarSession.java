@@ -37,10 +37,6 @@ private boolean esContraseniaFuerte(String password) {
         // Expresión Regular para complejidad
         String regex = "^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9]).{8,}$";
         
-        // Nota: Si quieres quitar el requisito de longitud mínima de 8, 
-        // simplemente reemplaza el final de la regex por .*$
-        // Si quieres dejarlo como estaba antes (solo > 8), usa esta regex: ^.{8,}$
-        
         Pattern pattern = Pattern.compile(regex);
         Matcher matcher = pattern.matcher(password);
         return matcher.matches();
