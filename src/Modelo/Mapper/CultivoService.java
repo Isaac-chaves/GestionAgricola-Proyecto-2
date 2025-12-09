@@ -1,10 +1,17 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
 package Modelo.Mapper;
 
 import Modelo.Cultivo;
 import Modelo.Dao.CultivoDAO;
 import Modelo.Dto.CultivoDTO;
 import java.util.List;
-
+ /**
+ *
+ * @author isaac
+ */
 public class CultivoService {
 
     private CultivoDAO cultivoDAO = new CultivoDAO();

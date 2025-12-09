@@ -1,3 +1,7 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
 package Modelo.Dao;
 
 
@@ -10,6 +14,10 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ *
+ * @author isaac
+ */
 public class AlmacenamientoDAO {
     
     public boolean insertar(Almacenamiento almacen) {
@@ -49,6 +57,7 @@ public class AlmacenamientoDAO {
         }
         return almacen;
     }
+    
     public List<Almacenamiento> seleccionarTodos() {
         List<Almacenamiento> almacenes = new ArrayList<>();
         String sql = "SELECT id_almacen, nombre, capacidad_kg FROM almacenes";
@@ -69,5 +78,35 @@ public class AlmacenamientoDAO {
             System.err.println("Error al seleccionar todos los almacenes: " + e.getMessage());
         }
         return almacenes;
+    }
+
+    public boolean actualizar(Almacenamiento almacen) {
+        String sql = "UPDATE almacenes SET nombre = ?, capacidad_kg = ? WHERE id_almacen = ?";
+        try (Connection conn = ConexionBD.getInstance().getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setString(1, almacen.getNombre());
+            ps.setDouble(2, almacen.getCapacidadKg());
+            ps.setInt(3, almacen.getIdAlmacen());
+
+            return ps.executeUpdate() > 0;
+        } catch (SQLException e) {
+            System.err.println("Error al actualizar almacén: " + e.getMessage());
+            return false;
+        }
+    }
+
+    public boolean eliminar(int id) {
+        String sql = "DELETE FROM almacenes WHERE id_almacen = ?";
+        try (Connection conn = ConexionBD.getInstance().getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setInt(1, id);
+
+            return ps.executeUpdate() > 0;
+        } catch (SQLException e) {
+            System.err.println("Error al eliminar almacén: " + e.getMessage());
+            return false;
+        }
     }
 }

@@ -1,3 +1,7 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
 package Modelo.Mapper;
 
 import Modelo.Dto.UsuarioDTO;
@@ -5,6 +9,10 @@ import Modelo.Usuarios.Usuarios;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ *
+ * @author isaac
+ */
 public class UsuariosMapper {
     public static UsuarioDTO toDTO(Usuarios entidad) {
         if (entidad == null) return null;

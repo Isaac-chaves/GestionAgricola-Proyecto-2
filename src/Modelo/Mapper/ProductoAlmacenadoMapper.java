@@ -1,3 +1,7 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
 package Modelo.Mapper;
 
 import Modelo.Dto.ProductoAlmacenadoDTO;
@@ -6,7 +10,10 @@ import Modelo.Cultivo;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
-
+/**
+ *
+ * @author isaac
+ */
 public class ProductoAlmacenadoMapper {
 
     public static ProductoAlmacenadoDTO toDTO(ProductoAlmacenado entidad, int idAlmacen) {

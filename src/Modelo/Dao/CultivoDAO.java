@@ -1,3 +1,7 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
 package Modelo.Dao;
 
 import Modelo.ConexionBD;
@@ -9,6 +13,11 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+
+/**
+ *
+ * @author isaac
+ */
 public class CultivoDAO {
 
     public boolean insertar(Cultivo cultivo) {
@@ -82,7 +91,6 @@ public class CultivoDAO {
         }
         return cultivos;
     }
-
     public boolean actualizar(Cultivo cultivo) {
         String sql = "UPDATE cultivos SET nombre = ?, tipo = ?, area_sembrada = ?, estado_crecimiento = ?, fecha_siembra = ?, fecha_cosecha = ? WHERE id_cultivo = ?";
         
