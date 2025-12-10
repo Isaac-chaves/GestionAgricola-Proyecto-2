@@ -15,9 +15,9 @@ public class Trabajador {
     private double salario;
      private String Nombre;
     private String Correo;
-    private int  Telefono;
+    private String Telefono;
 
-    public Trabajador(int cedula, String puesto, String horario, double salario, String Nombre, String Correo, int Telefono) {
+    public Trabajador(int cedula, String puesto, String horario, double salario, String Nombre, String Correo, String Telefono) {
         this.cedula = cedula;
         this.puesto = puesto;
         this.horario = horario;
@@ -55,15 +55,15 @@ public class Trabajador {
         return Correo;
     }
 
-    public int getTelefono() {
-        return Telefono;
-    }
-
     public void setCorreo(String Correo) {
         this.Correo = Correo;
     }
 
-    public void setTelefono(int Telefono) {
+    public String getTelefono() {
+        return Telefono;
+    }
+
+    public void setTelefono(String Telefono) {
         this.Telefono = Telefono;
     }
 

@@ -9,8 +9,8 @@ public class ConexionBD {
     private static ConexionBD instance;
     private static final String DRIVER = "org.mariadb.jdbc.Driver";
     private static final String URL = "jdbc:mariadb://localhost:3306/gestion_agricola";
-    private static final String USUARIO = "admin";
-    private static final String CONTRASENA = "admin123@";
+    private static final String USUARIO = "root";
+    private static final String CONTRASENA = "Root123@";
     
     static {
         try {

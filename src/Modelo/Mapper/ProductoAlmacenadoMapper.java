@@ -20,12 +20,10 @@ public class ProductoAlmacenadoMapper {
         dto.setIdAlmacen(idAlmacen); 
 
         Cultivo cultivo = entidad.getCultivo();
-        // El Service se encarga de que 'cultivo' esté completo o sea 'null'
         if (cultivo != null) {
             dto.setIdCultivo(cultivo.getId());
             dto.setNombreCultivo(cultivo.getNombre());
         } else {
-            // Manejo de caso donde la entidad Cultivo es NULL
             dto.setIdCultivo(0); 
             dto.setNombreCultivo("Cultivo no encontrado");
         }
@@ -47,12 +45,11 @@ public class ProductoAlmacenadoMapper {
         if (dto == null) return null;
 
         LocalDate fechaIngreso = LocalDate.parse(dto.getFechaIngreso());
-        // Manejar el posible valor nulo de fechaEgreso
         LocalDate fechaEgreso = dto.getFechaEgreso() != null ? LocalDate.parse(dto.getFechaEgreso()) : null;
 
         ProductoAlmacenado entidad = new ProductoAlmacenado(
             dto.getIdProductoAlmacenado(),
-            cultivoEntidad, // Aquí se utiliza la entidad Cultivo completa buscada por el Service
+            cultivoEntidad, 
             dto.getCantidadKg(),
             fechaIngreso,
             fechaEgreso
