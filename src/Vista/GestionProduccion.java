@@ -4,17 +4,20 @@
  */
 package Vista;
 
+import Controlador.VentanaControlador;
+
 /**
  *
  * @author isaac
  */
 public class GestionProduccion extends javax.swing.JInternalFrame {
-
+private VentanaControlador controlador;
     /**
      * Creates new form JinternalProduccion
      */
-    public GestionProduccion() {
+    public GestionProduccion(VentanaControlador controlador) {
         initComponents();
+        this.controlador = controlador;
     }
 
     /**

@@ -4,60 +4,31 @@
  */
 package Vista;
 
+import Controlador.VentanaControlador;
+
 /**
  *
  * @author isaac
  */
 public class MenuPrincipal extends javax.swing.JFrame {
-
-    private javax.swing.JPanel glassPaneBlocker;
-    GestionProduccion ventanaProduccion;
-    GestionAlmacenamiento ventanaAlmacen;
-    GestionEmpleados ventanaEmpleados;
-    GestionCultivo ventanaProducto;
     AyudaDialog ventanaAyuda;
-    GestionDistribucion ventanaDistribucion;
-
+    private VentanaControlador controlador;
+    private javax.swing.JPanel glassPaneBlocker;
+  
     /**
      * Creates new form Gui
      */
     public MenuPrincipal() {
         initComponents();
-        inicializarventanas();
-        initializeGlassPane();
+        inicializarComponentes();
         this.setExtendedState(MAXIMIZED_BOTH);
     }
-
-    public void inicializarventanas() {
-        ventanaProduccion = new GestionProduccion();
-        ventanaAlmacen = new GestionAlmacenamiento();
-        ventanaEmpleados = new GestionEmpleados();
-        ventanaProducto = new GestionCultivo();
-        ventanaAyuda = new AyudaDialog(this, true);
-        ventanaDistribucion = new GestionDistribucion();
-    }
-
-    private void mostrarVentana(javax.swing.JInternalFrame ventana) {
-        if (ventana == null || ventana.isClosed()) {
-            jDesktopPane.add(ventana);
-        }
-        if (ventana == null) {
-            return;
-        }
-        if (ventana.getParent() == null) {
-            jDesktopPane.add(ventana);
-        }
-        ventana.setVisible(true);
-        ventana.toFront();
-        try {
-            ventana.setSelected(true);
-        } catch (java.beans.PropertyVetoException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void initializeGlassPane() {
-        glassPaneBlocker = new javax.swing.JPanel();
+    
+    
+private void inicializarComponentes() {
+        controlador = new VentanaControlador(this, jDesktopPane); 
+        ventanaAyuda = new AyudaDialog(this, true); 
+     glassPaneBlocker = new javax.swing.JPanel();
         glassPaneBlocker.setOpaque(false);
         glassPaneBlocker.addMouseListener(new java.awt.event.MouseAdapter() {
         });
@@ -65,6 +36,11 @@ public class MenuPrincipal extends javax.swing.JFrame {
         });
         glassPaneBlocker.setVisible(false);
         this.setGlassPane(glassPaneBlocker);
+}
+
+    public void abrirDialogoAyuda() {
+        ventanaAyuda.setLocationRelativeTo(this);
+        ventanaAyuda.setVisible(true);
     }
 
     public void mostrarVentanaLogin() {
@@ -109,7 +85,7 @@ public class MenuPrincipal extends javax.swing.JFrame {
         Empleados = new javax.swing.JMenu();
         jMenuEmpleado = new javax.swing.JMenuItem();
         Ayuda = new javax.swing.JMenu();
-        jMenuItem5 = new javax.swing.JMenuItem();
+        jmenuAyuda = new javax.swing.JMenuItem();
 
         jMenuItem2.setText("jMenuItem2");
 
@@ -206,13 +182,13 @@ public class MenuPrincipal extends javax.swing.JFrame {
 
         Ayuda.setText("Ayuda");
 
-        jMenuItem5.setText("Guia de uso");
-        jMenuItem5.addActionListener(new java.awt.event.ActionListener() {
+        jmenuAyuda.setText("Guia de uso");
+        jmenuAyuda.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem5ActionPerformed(evt);
+                jmenuAyudaActionPerformed(evt);
             }
         });
-        Ayuda.add(jMenuItem5);
+        Ayuda.add(jmenuAyuda);
 
         jMenuBar1.add(Ayuda);
 
@@ -234,48 +210,46 @@ public class MenuPrincipal extends javax.swing.JFrame {
 
     private void jMenuDistribuccionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuDistribuccionActionPerformed
 
-        mostrarVentana(ventanaDistribucion);
+        controlador.abrirGestionDistribucion();
 
     }//GEN-LAST:event_jMenuDistribuccionActionPerformed
 
     private void jmenuProduccionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmenuProduccionActionPerformed
 
-        mostrarVentana(ventanaProduccion);
+        controlador.abrirGestionProduccion();
+        
     }//GEN-LAST:event_jmenuProduccionActionPerformed
 
     private void jMenuproductoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuproductoActionPerformed
 
-        mostrarVentana(ventanaProducto);
+controlador.abrirGestionCultivo();
 
     }//GEN-LAST:event_jMenuproductoActionPerformed
 
     private void jMenuAlmacenesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuAlmacenesActionPerformed
 
-        mostrarVentana(ventanaAlmacen);
+       controlador.abrirGestionAlmacenamiento();
 
     }//GEN-LAST:event_jMenuAlmacenesActionPerformed
 
     private void cerrarSessionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cerrarSessionActionPerformed
 
-        ventanaProduccion.dispose();
-        ventanaAlmacen.dispose();
-        ventanaEmpleados.dispose();
-        ventanaProducto.dispose();
-        ventanaDistribucion.dispose();
+       controlador.cerrarTodasLasVentanasInternas(); 
         mostrarVentanaLogin();
 
     }//GEN-LAST:event_cerrarSessionActionPerformed
 
     private void jMenuEmpleadoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuEmpleadoActionPerformed
 
-        mostrarVentana(ventanaEmpleados);
+        controlador.abrirGestionEmpleados();
+        
     }//GEN-LAST:event_jMenuEmpleadoActionPerformed
 
-    private void jMenuItem5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem5ActionPerformed
-        // TODO add your handling code here:
+    private void jmenuAyudaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmenuAyudaActionPerformed
 
+   controlador.abrirDialogoAyuda();
 
-    }//GEN-LAST:event_jMenuItem5ActionPerformed
+    }//GEN-LAST:event_jmenuAyudaActionPerformed
 
     /**
      * @param args the command line arguments
@@ -335,9 +309,10 @@ public class MenuPrincipal extends javax.swing.JFrame {
     private javax.swing.JMenuItem jMenuDistribuccion;
     private javax.swing.JMenuItem jMenuEmpleado;
     private javax.swing.JMenuItem jMenuItem2;
-    private javax.swing.JMenuItem jMenuItem5;
     private javax.swing.JMenuItem jMenuItem7;
     private javax.swing.JMenuItem jMenuproducto;
+    private javax.swing.JMenuItem jmenuAyuda;
     private javax.swing.JMenuItem jmenuProduccion;
     // End of variables declaration//GEN-END:variables
+
 }

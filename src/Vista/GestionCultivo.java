@@ -4,22 +4,55 @@
  */
 package Vista;
 
+import Controlador.VentanaControlador;
+import Modelo.Dto.CultivoDTO;
+import Modelo.Service.CultivoService;
 import Vista.AgregarJdialog.AgregarCultivo;
 import Vista.EditarJdialog.EditarCultivo;
+import java.util.List;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
  * @author isaac
  */
 public class GestionCultivo extends javax.swing.JInternalFrame {
-
+  private VentanaControlador controlador;
+  private CultivoService cultivoService = new CultivoService();
+  private DefaultTableModel modeloTabla;
+    
+    
     /**
      * Creates new form Empleados
      */
-    public GestionCultivo() {
-        initComponents();
-    }
+   public GestionCultivo(VentanaControlador controlador) {
+    initComponents();
+    this.controlador = controlador;
+    cargarDatosTabla(); 
+}
 
+public void cargarDatosTabla() {
+    DefaultTableModel modeloTabla = (DefaultTableModel) Tablacultivo.getModel(); 
+    modeloTabla.setRowCount(0); 
+
+    List<CultivoDTO> listaCultivos = controlador.obtenerDatosCultivos();
+
+    // FILAS BASADAS EN CultivoDTO
+    for (CultivoDTO cultivo : listaCultivos) {
+        // Asumiendo que la tabla tiene 5 columnas visibles: ID, Nombre, Tipo, Área, Estado
+        Object[] fila = new Object[5]; 
+        fila[0] = cultivo.getId(); 
+        fila[1] = cultivo.getNombre(); 
+        fila[2] = cultivo.getTipo(); 
+        fila[3] = cultivo.getAreaSembrada(); // int
+        fila[4] = cultivo.getEstadoCrecimiento(); 
+
+        modeloTabla.addRow(fila);
+    }
+}
+   
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -34,7 +67,7 @@ public class GestionCultivo extends javax.swing.JInternalFrame {
         Tablacultivo = new javax.swing.JTable();
         jTextField1 = new javax.swing.JTextField();
         btnEditar = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
+        btn_Eliminar = new javax.swing.JButton();
         btnAgregar = new javax.swing.JButton();
 
         setClosable(true);
@@ -91,10 +124,10 @@ public class GestionCultivo extends javax.swing.JInternalFrame {
             }
         });
 
-        jButton3.setText("Eliminar");
-        jButton3.addActionListener(new java.awt.event.ActionListener() {
+        btn_Eliminar.setText("Eliminar");
+        btn_Eliminar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton3ActionPerformed(evt);
+                btn_EliminarActionPerformed(evt);
             }
         });
 
@@ -120,7 +153,7 @@ public class GestionCultivo extends javax.swing.JInternalFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(btnEditar)
-                    .addComponent(jButton3))
+                    .addComponent(btn_Eliminar))
                 .addContainerGap(11, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
@@ -137,7 +170,7 @@ public class GestionCultivo extends javax.swing.JInternalFrame {
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(btnEditar)
                         .addGap(1, 1, 1)
-                        .addComponent(jButton3)))
+                        .addComponent(btn_Eliminar)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -155,24 +188,21 @@ public class GestionCultivo extends javax.swing.JInternalFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButton3ActionPerformed
-
-    private void btnEditarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditarActionPerformed
+    private void btn_EliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_EliminarActionPerformed
+        
        
         
-        EditarCultivo e = new EditarCultivo(null, true);
-        e.setLocationRelativeTo(null);
-        e.setVisible(true);
+    }//GEN-LAST:event_btn_EliminarActionPerformed
+
+    private void btnEditarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditarActionPerformed
+       controlador.abrirEditarCultivo();
+        
         
     }//GEN-LAST:event_btnEditarActionPerformed
 
     private void btnAgregarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarActionPerformed
         
-    AgregarCultivo agregarCultivo = new AgregarCultivo(null, true);
-    agregarCultivo.setLocationRelativeTo(null);
-    agregarCultivo.setVisible(true);
+   controlador.abrirAgregarCultivo();
     
     }//GEN-LAST:event_btnAgregarActionPerformed
 
@@ -181,7 +211,7 @@ public class GestionCultivo extends javax.swing.JInternalFrame {
     private javax.swing.JTable Tablacultivo;
     private javax.swing.JButton btnAgregar;
     private javax.swing.JButton btnEditar;
-    private javax.swing.JButton jButton3;
+    private javax.swing.JButton btn_Eliminar;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTextField jTextField1;

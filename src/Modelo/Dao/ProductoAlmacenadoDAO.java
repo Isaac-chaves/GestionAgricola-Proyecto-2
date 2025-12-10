@@ -39,8 +39,9 @@ public class ProductoAlmacenadoDAO {
             return false;
         }
     }
-
-    public List<ProductoAlmacenado> seleccionarPorAlmacenId(int idAlmacen) {
+    
+    // MÉTODO RENOMBRADO A seleccionarTodosPorAlmacen para coincidir con el Service
+    public List<ProductoAlmacenado> seleccionarTodosPorAlmacen(int idAlmacen) {
         List<ProductoAlmacenado> productos = new ArrayList<>();
         String sql = "SELECT id_producto_almacenado, id_cultivo, cantidad_kg, fecha_ingreso, fecha_egreso FROM productos_almacenados WHERE id_almacen = ?";
 
@@ -53,8 +54,7 @@ public class ProductoAlmacenadoDAO {
                     Cultivo cultivo = cultivoDAO.seleccionarPorId(idCultivo); 
 
                     ProductoAlmacenado producto = new ProductoAlmacenado(
-                            rs.getInt("id_producto_almacenado"),
-                            cultivo,
+                            rs.getInt("id_producto_almacenado"),cultivo,
                             rs.getDouble("cantidad_kg"),
                             rs.getDate("fecha_ingreso").toLocalDate(),
                             rs.getDate("fecha_egreso") != null ? rs.getDate("fecha_egreso").toLocalDate() : null
@@ -66,6 +66,31 @@ public class ProductoAlmacenadoDAO {
             System.err.println("Error al seleccionar productos por ID de almacén: " + e.getMessage());
         }
         return productos;
+    }
+
+    // MÉTODO AGREGADO: Necesario para el Service, asumiendo que el ID es único globalmente
+    public ProductoAlmacenado seleccionarPorId(int idProductoAlmacenado) {
+        String sql = "SELECT id_producto_almacenado, id_cultivo, cantidad_kg, fecha_ingreso, fecha_egreso FROM productos_almacenados WHERE id_producto_almacenado = ?";
+
+        try (Connection conn = ConexionBD.getInstance().getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, idProductoAlmacenado);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    int idCultivo = rs.getInt("id_cultivo");
+                    Cultivo cultivo = cultivoDAO.seleccionarPorId(idCultivo); 
+
+                    return new ProductoAlmacenado(
+                            rs.getInt("id_producto_almacenado"), cultivo,
+                            rs.getDouble("cantidad_kg"),
+                            rs.getDate("fecha_ingreso").toLocalDate(),
+                            rs.getDate("fecha_egreso") != null ? rs.getDate("fecha_egreso").toLocalDate() : null
+                    );
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Error al seleccionar producto almacenado por ID: " + e.getMessage());
+        }
+        return null;
     }
 
     public boolean actualizar(ProductoAlmacenado producto, int idAlmacen) {

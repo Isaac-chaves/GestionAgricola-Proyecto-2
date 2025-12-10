@@ -42,6 +42,11 @@ public class ProductoAlmacenado {
         this.cantidadKg = cantidadKg;
     }
 
+    public void setCultivo(Cultivo cultivo) {
+        this.cultivo = cultivo;
+    }
+
+    
     public ProductoAlmacenado(int id, Cultivo cultivo, double cantidadKg, LocalDate fechaIngreso, LocalDate fechaEgreso) {
         this.id = id;
         this.cultivo = cultivo;

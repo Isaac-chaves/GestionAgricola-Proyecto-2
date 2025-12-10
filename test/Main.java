@@ -1,6 +1,6 @@
  
 
-import Modelo.Mapper.CultivoService;
+import Modelo.Service.CultivoService;
 import Modelo.Dto.CultivoDTO;
 import Modelo.ConexionBD; 
 import java.sql.Connection;

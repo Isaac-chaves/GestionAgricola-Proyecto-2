@@ -4,22 +4,49 @@
  */
 package Vista;
 
+import Controlador.VentanaControlador;
+import Modelo.Dto.TrabajadorDTO;
 import Vista.AgregarJdialog.AgregarCultivo;
 import Vista.AgregarJdialog.AgregarEmpleados;
 import Vista.EditarJdialog.EditarEmpleados;
+import java.util.List;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
  * @author isaac
  */
 public class GestionEmpleados extends javax.swing.JInternalFrame {
-
+private VentanaControlador controlador;
     /**
      * Creates new form Empleados
      */
-    public GestionEmpleados() {
-        initComponents();
+   public GestionEmpleados(VentanaControlador controlador) {
+    initComponents();
+    this.controlador = controlador;
+    cargarDatosTabla(); 
+}
+
+public void cargarDatosTabla() {
+    DefaultTableModel modeloTabla = (DefaultTableModel) TablaEmpleados.getModel(); 
+    modeloTabla.setRowCount(0); 
+
+    List<TrabajadorDTO> listaTrabajadores = controlador.obtenerDatosTrabajadores();
+
+    // FILAS BASADAS EN TrabajadorDTO
+    for (TrabajadorDTO trabajador : listaTrabajadores) {
+        Object[] fila = new Object[7]; 
+        fila[0] = trabajador.getCedula(); 
+        fila[1] = trabajador.getNombre(); 
+        fila[2] = trabajador.getCorreo(); 
+        fila[3] = trabajador.getTelefono(); 
+        fila[4] = trabajador.getPuesto(); 
+        fila[5] = trabajador.getHorario(); 
+        fila[6] = trabajador.getSalario(); // double
+
+        modeloTabla.addRow(fila);
     }
+}
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -157,23 +184,18 @@ public class GestionEmpleados extends javax.swing.JInternalFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-        // TODO add your handling code here:
+    
     }//GEN-LAST:event_jButton3ActionPerformed
 
     private void btnEditarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditarActionPerformed
 
-       EditarEmpleados e = new EditarEmpleados(null, true);
-       e.setLocationRelativeTo(null);
-        e.setVisible(true);
+    controlador.abrirEditarEmpleado();
        
-
     }//GEN-LAST:event_btnEditarActionPerformed
 
     private void btnAgregarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarActionPerformed
        
-    AgregarEmpleados e = new AgregarEmpleados(null, true);
-    e.setLocationRelativeTo(null);
-        e.setVisible(true);
+   controlador.abrirAgregarEmpleado();
         
     }//GEN-LAST:event_btnAgregarActionPerformed
 

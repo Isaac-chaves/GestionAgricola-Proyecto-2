@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package Modelo.Mapper;
 
 import Modelo.Dto.ProductoAlmacenadoDTO;
@@ -24,9 +20,14 @@ public class ProductoAlmacenadoMapper {
         dto.setIdAlmacen(idAlmacen); 
 
         Cultivo cultivo = entidad.getCultivo();
+        // El Service se encarga de que 'cultivo' esté completo o sea 'null'
         if (cultivo != null) {
             dto.setIdCultivo(cultivo.getId());
             dto.setNombreCultivo(cultivo.getNombre());
+        } else {
+            // Manejo de caso donde la entidad Cultivo es NULL
+            dto.setIdCultivo(0); 
+            dto.setNombreCultivo("Cultivo no encontrado");
         }
         
         dto.setCantidadKg(entidad.getCantidadKg());
@@ -45,16 +46,18 @@ public class ProductoAlmacenadoMapper {
     public static ProductoAlmacenado toEntidad(ProductoAlmacenadoDTO dto, Cultivo cultivoEntidad) {
         if (dto == null) return null;
 
+        LocalDate fechaIngreso = LocalDate.parse(dto.getFechaIngreso());
+        // Manejar el posible valor nulo de fechaEgreso
         LocalDate fechaEgreso = dto.getFechaEgreso() != null ? LocalDate.parse(dto.getFechaEgreso()) : null;
 
         ProductoAlmacenado entidad = new ProductoAlmacenado(
             dto.getIdProductoAlmacenado(),
-            cultivoEntidad, 
+            cultivoEntidad, // Aquí se utiliza la entidad Cultivo completa buscada por el Service
             dto.getCantidadKg(),
-            LocalDate.parse(dto.getFechaIngreso()),
+            fechaIngreso,
             fechaEgreso
         );
-
+        
         return entidad;
     }
 }

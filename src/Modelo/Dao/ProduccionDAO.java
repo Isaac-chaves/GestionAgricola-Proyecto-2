@@ -21,9 +21,9 @@ import java.util.List;
  *
  * @author isaac
  */
+
 public class ProduccionDAO {
     private CultivoDAO cultivoDAO = new CultivoDAO();
-
     public boolean insertar(DatosProduccion produccion) {
         String sql = "INSERT INTO produccion (id_cultivo, fecha_cosecha, cantidad_recolectada_kg, calidad_kg, destino) VALUES (?, ?, ?, ?, ?)";
         try (Connection conn = ConexionBD.getInstance().getConnection();
@@ -41,7 +41,6 @@ public class ProduccionDAO {
             return false;
         }
     }
-
     public List<DatosProduccion> seleccionarTodos() {
         List<DatosProduccion> producciones = new ArrayList<>();
         String sql = "SELECT id_produccion, id_cultivo, fecha_cosecha, cantidad_recolectada_kg, calidad_kg, destino FROM produccion";
@@ -69,6 +68,32 @@ public class ProduccionDAO {
         }
         return producciones;
     }
+    public DatosProduccion seleccionarPorId(int id) {
+        String sql = "SELECT id_produccion, id_cultivo, fecha_cosecha, cantidad_recolectada_kg, calidad_kg, destino FROM produccion WHERE id_produccion = ?";
+        try (Connection conn = ConexionBD.getInstance().getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setInt(1, id);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    int idCultivo = rs.getInt("id_cultivo");
+                    Cultivo cultivo = cultivoDAO.seleccionarPorId(idCultivo); 
+
+                    return new DatosProduccion(
+                        rs.getInt("id_produccion"),
+                        cultivo,
+                        rs.getDate("fecha_cosecha").toLocalDate(),
+                        rs.getInt("cantidad_recolectada_kg"),
+                        rs.getInt("calidad_kg"),
+                        rs.getString("destino")
+                    );
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Error al seleccionar producción por ID: " + e.getMessage());
+        }
+        return null;
+    }
 
     public boolean actualizar(DatosProduccion produccion) {
         String sql = "UPDATE produccion SET id_cultivo = ?, fecha_cosecha = ?, cantidad_recolectada_kg = ?, calidad_kg = ?, destino = ? WHERE id_produccion = ?";
@@ -88,7 +113,7 @@ public class ProduccionDAO {
             return false;
         }
     }
-
+    
     public boolean eliminar(int id) {
         String sql = "DELETE FROM produccion WHERE id_produccion = ?";
         try (Connection conn = ConexionBD.getInstance().getConnection();

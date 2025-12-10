@@ -4,6 +4,7 @@
  */
 package Vista;
 
+import Controlador.VentanaControlador;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.swing.JOptionPane;
@@ -13,7 +14,7 @@ import javax.swing.JOptionPane;
  * @author isaac
  */
 public class IniciarSession extends javax.swing.JDialog {
-
+private VentanaControlador controlador;
     /**
      * Creates new form IniciarSession
      * @param parent
@@ -24,8 +25,8 @@ public IniciarSession(java.awt.Frame parent, boolean modal) {
     initComponents();
     this.setResizable(false);
     this.setLocationRelativeTo(parent);
+    this.controlador = controlador;
 }
-
 private boolean esCorreoValido(String email) {
  String regex = "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,6}$";
   Pattern pattern = Pattern.compile(regex);
@@ -34,7 +35,6 @@ private boolean esCorreoValido(String email) {
     }
 
 private boolean esContraseniaFuerte(String password) {
-        // Expresión Regular para complejidad
         String regex = "^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9]).{8,}$";
         
         Pattern pattern = Pattern.compile(regex);
@@ -160,7 +160,7 @@ private boolean esContraseniaFuerte(String password) {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jFormattedTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jFormattedTextField1ActionPerformed
-// Validación en tiempo real (al presionar Enter)
+
         String email = jFormattedTextField1.getText().trim();
         
         if (!email.isEmpty() && !esCorreoValido(email)) {
@@ -182,25 +182,18 @@ private boolean esContraseniaFuerte(String password) {
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
 String correo = jFormattedTextField1.getText().trim();
         String contrasenia = jFormattedTextField2.getText().trim();
-        
-        
-        // 1. Validar campos vacíos
         if (correo.isEmpty() || contrasenia.isEmpty()) {
 
             javax.swing.JOptionPane.showMessageDialog(this,
                     "Por favor, complete todos los campos para continuar.",
                     "Campos vacíos",
                     javax.swing.JOptionPane.WARNING_MESSAGE);
-            
-        // 2. Validar formato del correo
         } else if (!esCorreoValido(correo)) {
              javax.swing.JOptionPane.showMessageDialog(this,
                     "El formato del correo electrónico es incorrecto.",
                     "Error de Formato",
                     javax.swing.JOptionPane.ERROR_MESSAGE);
              jFormattedTextField1.requestFocus();
-             
-        // 3. Validar complejidad de la contraseña (¡AQUÍ ESTÁ LA NUEVA VALIDACIÓN!)
         } else if (!esContraseniaFuerte(contrasenia)) {
              javax.swing.JOptionPane.showMessageDialog(this,
                     "La contraseña debe contener:\n"
@@ -220,7 +213,7 @@ String correo = jFormattedTextField1.getText().trim();
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void cerrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cerrarActionPerformed
-      
+
         System.exit(0);
     }//GEN-LAST:event_cerrarActionPerformed
 

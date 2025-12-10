@@ -4,22 +4,51 @@
  */
 package Vista;
 
-import Vista.AgregarJdialog.AgregarCultivo;
-import Vista.AgregarJdialog.AgregarDistribucion;
+import Controlador.VentanaControlador;
+import Modelo.Dto.DistribucionDTO;
+import java.util.List;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
  * @author isaac
  */
 public class GestionDistribucion extends javax.swing.JInternalFrame {
-
+private VentanaControlador controlador;
     /**
      * Creates new form Empleados
      */
-    public GestionDistribucion() {
-        initComponents();
-    }
+public GestionDistribucion(VentanaControlador controlador) {
+    initComponents();
+    this.controlador = controlador;
+    cargarDatosTabla(); 
+}
 
+public void cargarDatosTabla() {
+    DefaultTableModel modeloTabla = (DefaultTableModel) TablaDistribucion.getModel(); 
+    modeloTabla.setRowCount(0); 
+
+    List<DistribucionDTO> listaDistribuciones = controlador.obtenerDatosDistribucion(); 
+
+    // FILAS BASADAS EN DistribucionDTO
+    for (DistribucionDTO distribucion : listaDistribuciones) {
+        
+        // ESTAS LLAMADAS AHORA FUNCIONARÁN:
+        String nombreProducto = controlador.obtenerNombreProducto(distribucion.getIdProductoAlmacenado());
+        String nombreResponsable = controlador.obtenerNombreTrabajador(distribucion.getIdTrabajadorResponsable());
+
+        // 2. Crear la fila con los nombres
+        Object[] fila = new Object[6];
+        fila[0] = distribucion.getIdDistribucion(); 
+        fila[1] = nombreProducto; 
+        fila[2] = distribucion.getCantidad(); 
+        fila[3] = distribucion.getDestino(); 
+        fila[4] = distribucion.getFechaDistribucion(); 
+        fila[5] = nombreResponsable; 
+
+        modeloTabla.addRow(fila);
+    }
+}
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -128,11 +157,7 @@ public class GestionDistribucion extends javax.swing.JInternalFrame {
 
     private void btnAgregarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarActionPerformed
 
-    AgregarDistribucion agregarDistribucion = new AgregarDistribucion(null, true);
-    agregarDistribucion.setLocationRelativeTo(null);
-    agregarDistribucion.setVisible(true);
-        
-        
+    controlador.abrirAgregarDistribucion();
         
     }//GEN-LAST:event_btnAgregarActionPerformed
 

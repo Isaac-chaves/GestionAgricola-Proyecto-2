@@ -4,22 +4,49 @@
  */
 package Vista;
 
+import Controlador.VentanaControlador;
+import Modelo.Dto.ProductoAlmacenadoDTO;
 import Vista.AgregarJdialog.AgregarAlmacen;
 import Vista.AgregarJdialog.AgregarCultivo;
 import Vista.EditarJdialog.EditarAlmacen;
+import java.util.List;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
  * @author isaac
  */
 public class GestionAlmacenamiento extends javax.swing.JInternalFrame {
-
+    private VentanaControlador controlador;
     /**
      * Creates new form Empleados
      */
-    public GestionAlmacenamiento() {
-        initComponents();
+    public GestionAlmacenamiento(VentanaControlador controlador) {
+    initComponents();
+    this.controlador = controlador;
+    cargarDatosTabla(); 
+}
+
+public void cargarDatosTabla() {
+    DefaultTableModel modeloTabla = (DefaultTableModel) TablaAlmacenamiento.getModel(); 
+    modeloTabla.setRowCount(0); 
+
+    // Usando el método CORREGIDO que trae TODOS los productos
+    List<ProductoAlmacenadoDTO> listaProductosAlmacenados = controlador.obtenerTodosDatosProductosAlmacenados();
+
+    // FILAS BASADAS EN ProductoAlmacenadoDTO
+    for (ProductoAlmacenadoDTO producto : listaProductosAlmacenados) {
+        // Asumiendo 5 columnas visibles: ID Producto, Nombre Cultivo, Cantidad (Kg), Fecha Ingreso, ID Almacén
+        Object[] fila = new Object[5]; 
+        fila[0] = producto.getIdProductoAlmacenado(); 
+        fila[1] = producto.getNombreCultivo(); 
+        fila[2] = producto.getCantidadKg(); 
+        fila[3] = producto.getFechaIngreso(); 
+        fila[4] = producto.getIdAlmacen(); // Si se necesita el nombre, se debe cargar en el controlador/service
+
+        modeloTabla.addRow(fila);
     }
+}
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -154,22 +181,20 @@ public class GestionAlmacenamiento extends javax.swing.JInternalFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnElimanarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnElimanarActionPerformed
-        // TODO add your handling code here:
+        
+        
+        
     }//GEN-LAST:event_btnElimanarActionPerformed
 
     private void btnEditarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditarActionPerformed
 
-        EditarAlmacen e = new EditarAlmacen(null, true);
-        e.setLocationRelativeTo(null);
-        e.setVisible(true);
+     controlador.abrirEditarAlmacen();
 
     }//GEN-LAST:event_btnEditarActionPerformed
 
     private void btnAgregarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarActionPerformed
 
-        AgregarAlmacen e = new AgregarAlmacen(null, true);
-        e.setLocationRelativeTo(null);
-        e.setVisible(true);
+      controlador.abrirAgregarAlmacen();
 
     }//GEN-LAST:event_btnAgregarActionPerformed
 
