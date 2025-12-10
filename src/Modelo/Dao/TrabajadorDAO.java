@@ -29,7 +29,7 @@ public class TrabajadorDAO {
             ps.setInt(1, trabajador.getCedula());
             ps.setString(2, trabajador.getNombre());
             ps.setString(3, trabajador.getCorreo());
-            ps.setString(4, String.valueOf(trabajador.getTelefono())); 
+           ps.setString(4, trabajador.getTelefono());
             ps.setString(5, trabajador.getPuesto());
             ps.setString(6, trabajador.getHorario());
             ps.setDouble(7, trabajador.getSalario());
@@ -58,7 +58,7 @@ public class TrabajadorDAO {
                         rs.getDouble("salario"),
                         rs.getString("nombre"),
                         rs.getString("correo"),
-                        Integer.parseInt(rs.getString("telefono"))
+                        rs.getString("telefono")
                     );
                 }
             }
@@ -84,7 +84,7 @@ public class TrabajadorDAO {
                     rs.getDouble("salario"),
                     rs.getString("nombre"),
                     rs.getString("correo"),
-                    Integer.parseInt(rs.getString("telefono"))
+                    rs.getString("telefono")
                 );
                 trabajadores.add(trabajador);
             }
@@ -100,7 +100,7 @@ public class TrabajadorDAO {
 
             ps.setString(1, trabajador.getNombre());
             ps.setString(2, trabajador.getCorreo());
-            ps.setString(3, String.valueOf(trabajador.getTelefono()));
+            ps.setString(3, trabajador.getTelefono());
             ps.setString(4, trabajador.getPuesto());
             ps.setString(5, trabajador.getHorario());
             ps.setDouble(6, trabajador.getSalario());
@@ -112,8 +112,7 @@ public class TrabajadorDAO {
             return false;
         }
     }
-
-    // Método para eliminar un trabajador por cédula
+    
     public boolean eliminar(int cedula) {
         String sql = "DELETE FROM trabajadores WHERE cedula = ?";
         try (Connection conn = ConexionBD.getInstance().getConnection();

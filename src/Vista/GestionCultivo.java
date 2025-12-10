@@ -37,17 +37,15 @@ public void cargarDatosTabla() {
     modeloTabla.setRowCount(0); 
 
     List<CultivoDTO> listaCultivos = controlador.obtenerDatosCultivos();
-
-    // FILAS BASADAS EN CultivoDTO
     for (CultivoDTO cultivo : listaCultivos) {
-        // Asumiendo que la tabla tiene 5 columnas visibles: ID, Nombre, Tipo, Área, Estado
-        Object[] fila = new Object[5]; 
+        Object[] fila = new Object[7]; 
         fila[0] = cultivo.getId(); 
         fila[1] = cultivo.getNombre(); 
         fila[2] = cultivo.getTipo(); 
-        fila[3] = cultivo.getAreaSembrada(); // int
+        fila[3] = cultivo.getAreaSembrada(); 
         fila[4] = cultivo.getEstadoCrecimiento(); 
-
+        fila[5] = cultivo.getFechaSiembra(); 
+        fila[6] = cultivo.getFechaCosecha();
         modeloTabla.addRow(fila);
     }
 }
@@ -79,20 +77,20 @@ public void cargarDatosTabla() {
 
         Tablacultivo.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null}
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null}
             },
             new String [] {
-                "Id", "Nombre", "Tipo", "Area sembrada", "Estado Crecimiento"
+                "Id", "Nombre", "Tipo", "Area sembrada", "Estado Crecimiento", "Siembra", "Cosecha"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.Object.class
+                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
             };
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false
+                false, false, false, false, false, false, false
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -106,13 +104,15 @@ public void cargarDatosTabla() {
         Tablacultivo.setColumnSelectionAllowed(true);
         Tablacultivo.getTableHeader().setReorderingAllowed(false);
         jScrollPane1.setViewportView(Tablacultivo);
-        Tablacultivo.getColumnModel().getSelectionModel().setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        Tablacultivo.getColumnModel().getSelectionModel().setSelectionMode(javax.swing.ListSelectionModel.SINGLE_INTERVAL_SELECTION);
         if (Tablacultivo.getColumnModel().getColumnCount() > 0) {
             Tablacultivo.getColumnModel().getColumn(0).setResizable(false);
             Tablacultivo.getColumnModel().getColumn(1).setResizable(false);
             Tablacultivo.getColumnModel().getColumn(2).setResizable(false);
             Tablacultivo.getColumnModel().getColumn(3).setResizable(false);
             Tablacultivo.getColumnModel().getColumn(4).setResizable(false);
+            Tablacultivo.getColumnModel().getColumn(5).setResizable(false);
+            Tablacultivo.getColumnModel().getColumn(6).setResizable(false);
         }
 
         jTextField1.setText("Buscar");

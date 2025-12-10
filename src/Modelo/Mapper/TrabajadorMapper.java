@@ -21,7 +21,7 @@ public class TrabajadorMapper {
         dto.setCedula(entidad.getCedula());
         dto.setNombre(entidad.getNombre());
         dto.setCorreo(entidad.getCorreo());
-        dto.setTelefono(String.valueOf(entidad.getTelefono())); 
+        dto.setTelefono(entidad.getTelefono()); 
         dto.setPuesto(entidad.getPuesto());
         dto.setHorario(entidad.getHorario());
         dto.setSalario(entidad.getSalario());
@@ -45,7 +45,7 @@ public class TrabajadorMapper {
             dto.getSalario(),
             dto.getNombre(),
             dto.getCorreo(),
-            Integer.parseInt(dto.getTelefono()) 
+            dto.getTelefono() 
         );
         return entidad;
     }
