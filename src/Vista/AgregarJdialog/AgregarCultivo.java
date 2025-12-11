@@ -180,14 +180,14 @@ public class AgregarCultivo extends javax.swing.JDialog {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
 
+
         String nombre = jTextNombreCultivo.getText().trim();
         String tipo = jTextTipo.getText().trim();
         String areaStr = jTextArea.getText().trim();
         String estado = (String) jComboBox1.getSelectedItem();
-        String fechaSiembraStr = jTextSiembra.getText().trim();
+        String fechaSiembraStr = jTextSiembra. getText().trim();
         String fechaCosechaStr = jTextCosecha.getText().trim();
 
-        // Validaciones
         if (nombre.isEmpty()) {
             JOptionPane.showMessageDialog(this, "El nombre del cultivo es obligatorio.", "Validación", JOptionPane.WARNING_MESSAGE);
             return;
@@ -202,31 +202,29 @@ public class AgregarCultivo extends javax.swing.JDialog {
                 JOptionPane.showMessageDialog(this, "El área sembrada es obligatoria.", "Validación", JOptionPane.WARNING_MESSAGE);
                 return;
             }
-            area = Double.parseDouble(areaStr);
+            area = Double. parseDouble(areaStr);
             if (area <= 0) {
                 JOptionPane.showMessageDialog(this, "El área sembrada debe ser un número positivo.", "Validación", JOptionPane.WARNING_MESSAGE);
                 return;
             }
         } catch (NumberFormatException ex) {
-            JOptionPane.showMessageDialog(this, "Formato de área inválido. Use números (ej. 500.00).", "Validación", JOptionPane.WARNING_MESSAGE);
+            JOptionPane. showMessageDialog(this, "Formato de área inválido. Use números (ej.  500. 00).", "Validación", JOptionPane.WARNING_MESSAGE);
             return;
         }
 
-        // Validar fechas (obligatorias)
         try {
-            LocalDate.parse(fechaSiembraStr, formatter);
+            LocalDate. parse(fechaSiembraStr, formatter);
         } catch (DateTimeParseException ex) {
             JOptionPane.showMessageDialog(this, "Fecha de siembra inválida. Use YYYY-MM-DD.", "Validación", JOptionPane.WARNING_MESSAGE);
             return;
         }
         try {
-            LocalDate.parse(fechaCosechaStr, formatter);
+            LocalDate. parse(fechaCosechaStr, formatter);
         } catch (DateTimeParseException ex) {
             JOptionPane.showMessageDialog(this, "Fecha de cosecha inválida. Use YYYY-MM-DD.", "Validación", JOptionPane.WARNING_MESSAGE);
             return;
         }
 
-        // Crear DTO y guardar
         try {
             CultivoDTO cultivo = new CultivoDTO(
                     nombre,
@@ -239,17 +237,16 @@ public class AgregarCultivo extends javax.swing.JDialog {
 
             boolean ok = controladorBase.guardarCultivo(cultivo);
             if (ok) {
-                JOptionPane.showMessageDialog(this, "Cultivo guardado correctamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
-                ObservadorManager.getInstancia().notificarCambio("CULTIVOS");
+                JOptionPane.showMessageDialog(this, "Cultivo guardado correctamente.", "Éxito", JOptionPane. INFORMATION_MESSAGE);
+                ObservadorManager.getInstancia().notificarCambio("CULTIVO");
                 this.dispose();
             } else {
-                JOptionPane.showMessageDialog(this, "No se pudo guardar el cultivo. Verifique conexión o datos.", "Error", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, "No se pudo guardar el cultivo.  Verifique conexión o datos.", "Error", JOptionPane.ERROR_MESSAGE);
             }
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, "Ocurrió un error inesperado: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Ocurrió un error inesperado:  " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             e.printStackTrace();
         }
-        
     }//GEN-LAST:event_jButton1ActionPerformed
 
     /**

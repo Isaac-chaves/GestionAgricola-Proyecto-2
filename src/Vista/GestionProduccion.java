@@ -4,20 +4,103 @@
  */
 package Vista;
 
+import Controlador.ObservadorManager;
 import Controlador.VentanaControlador;
+import Modelo.Dto.ProduccionDTO;
+import java.util.List;
+import java.util.regex.PatternSyntaxException;
+import javax.swing.RowFilter;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+import javax.swing.event.InternalFrameAdapter;
+import javax.swing.event.InternalFrameEvent;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableRowSorter;
 
 /**
  *
  * @author isaac
  */
-public class GestionProduccion extends javax.swing.JInternalFrame {
-private VentanaControlador controlador;
+public class GestionProduccion extends javax.swing.JInternalFrame implements TablaObserver {
+    private VentanaControlador controlador;
+    private TableRowSorter<DefaultTableModel> sorter;
+
     /**
      * Creates new form JinternalProduccion
      */
     public GestionProduccion(VentanaControlador controlador) {
         initComponents();
         this.controlador = controlador;
+        configurarBuscador();
+        cargarDatosTabla();
+
+        // Registrar observer para actualizaciones desde otras ventanas (opcional)
+        ObservadorManager.getInstancia().registrarObservador(this);
+        this.addInternalFrameListener(new InternalFrameAdapter() {
+            public void internalFrameClosed(InternalFrameEvent e) {
+                ObservadorManager.getInstancia().eliminarObservador(GestionProduccion.this);
+            }
+        });
+    }
+
+    @Override
+    public void actualizarTabla(String tipoEntidad) {
+        // Si usas una constante para producción reemplaza "PRODUCCION"
+        if (tipoEntidad != null && tipoEntidad.equals("PRODUCCION")) {
+            cargarDatosTabla();
+            filtrar();
+        }
+    }
+
+    // Carga datos de ProduccionDTO en la tabla
+    public void cargarDatosTabla() {
+        DefaultTableModel modelo = (DefaultTableModel) tablaProducto.getModel();
+        modelo.setRowCount(0);
+
+        List<ProduccionDTO> lista = controlador.obtenerTodasLasProducciones();
+
+        if (lista == null) return;
+
+        for (ProduccionDTO p : lista) {
+            Object[] fila = new Object[6];
+            fila[0] = p.getIdProduccion();
+            fila[1] = p.getNombreCultivo();        // nombre del cultivo (mapper lo setea)
+            fila[2] = p.getFechaCosecha();
+            fila[3] = p.getCantidadRecolectadaKg();
+            fila[4] = p.getCalidad();
+            fila[5] = p.getDestino();
+            modelo.addRow(fila);
+        }
+
+        if (sorter != null) {
+            sorter.setModel(modelo);
+        }
+    }
+
+    // Configurar buscador para tablaProducto
+    private void configurarBuscador() {
+        DefaultTableModel model = (DefaultTableModel) tablaProducto.getModel();
+        sorter = new TableRowSorter<>(model);
+        tablaProducto.setRowSorter(sorter);
+
+        jTextField1.getDocument().addDocumentListener(new DocumentListener() {
+            @Override public void insertUpdate(DocumentEvent e) { filtrar(); }
+            @Override public void removeUpdate(DocumentEvent e) { filtrar(); }
+            @Override public void changedUpdate(DocumentEvent e) { filtrar(); }
+        });
+    }
+
+    private void filtrar() {
+        String text = jTextField1.getText();
+        if (text == null || text.trim().isEmpty()) {
+            sorter.setRowFilter(null);
+        } else {
+            try {
+                sorter.setRowFilter(RowFilter.regexFilter("(?i)" + java.util.regex.Pattern.quote(text)));
+            } catch (PatternSyntaxException ex) {
+                sorter.setRowFilter(null);
+            }
+        }
     }
 
     /**

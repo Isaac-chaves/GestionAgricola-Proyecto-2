@@ -9,10 +9,15 @@ import Controlador.VentanaControlador;
 import Modelo.Dto.CultivoDTO;
 import Modelo.Service.CultivoService;
 import java.util.List;
+import java.util.regex.PatternSyntaxException;
 import javax.swing.JOptionPane;
+import javax.swing.RowFilter;
+import javax.swing.event.DocumentListener;
 import javax.swing.event.InternalFrameAdapter;
 import javax.swing.event.InternalFrameEvent;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableRowSorter;
+import org.w3c.dom.events.DocumentEvent;
 
 /**
  *
@@ -22,18 +27,14 @@ public class GestionCultivo extends javax.swing.JInternalFrame implements TablaO
   private VentanaControlador controlador;
   private CultivoService cultivoService = new CultivoService();
   private DefaultTableModel modeloTabla;
+  private TableRowSorter<DefaultTableModel> sorter;
     
-    
-    /**
-     * Creates new form Empleados
-     * @param controlador
-     */
   public GestionCultivo(VentanaControlador controlador) {
     initComponents();
     this.controlador = controlador;
-    cargarDatosTabla(); 
+    cargarDatosTabla();
+    configurarBuscador();
 
-    // INICIO: REGISTRO OBSERVER
     ObservadorManager.getInstancia().registrarObservador((TablaObserver) this); 
     this.addInternalFrameListener(new InternalFrameAdapter() {
         public void internalFrameClosed(InternalFrameEvent e) {
@@ -41,15 +42,18 @@ public class GestionCultivo extends javax.swing.JInternalFrame implements TablaO
         }
     });
 }
+
 @Override
 public void actualizarTabla(String tipoEntidad) {
-    if (tipoEntidad.equals("CULTIVO")) { // La clave debe coincidir con la notificación
+    if (tipoEntidad != null && tipoEntidad.equals("CULTIVO")) {
         cargarDatosTabla();
+        filtrar();
     }
 }
+
 public void cargarDatosTabla() {
     DefaultTableModel modeloTabla = (DefaultTableModel) Tablacultivo.getModel(); 
-    modeloTabla.setRowCount(0); 
+    modeloTabla. setRowCount(0); 
 
     List<CultivoDTO> listaCultivos = controlador.obtenerDatosCultivos();
     for (CultivoDTO cultivo : listaCultivos) {
@@ -60,8 +64,49 @@ public void cargarDatosTabla() {
         fila[3] = cultivo.getAreaSembrada(); 
         fila[4] = cultivo.getEstadoCrecimiento(); 
         fila[5] = cultivo.getFechaSiembra(); 
-        fila[6] = cultivo.getFechaCosecha();
+        fila[6] = cultivo. getFechaCosecha();
         modeloTabla.addRow(fila);
+    }
+
+    if (sorter != null) {
+        sorter.setModel(modeloTabla);
+    }
+}
+
+private void configurarBuscador() {
+    DefaultTableModel model = (DefaultTableModel) Tablacultivo.getModel();
+    sorter = new TableRowSorter<>(model);
+    Tablacultivo.setRowSorter(sorter);
+
+    jTextField1.getDocument().addDocumentListener(new DocumentListener() {
+        public void insertUpdate(DocumentEvent e) { filtrar(); }
+        public void removeUpdate(DocumentEvent e) { filtrar(); }
+        public void changedUpdate(DocumentEvent e) { filtrar(); }
+public void insertUpdate(javax.swing.event.DocumentEvent e) {
+    filtrar();
+}
+
+public void removeUpdate(javax.swing.event.DocumentEvent e) {
+    filtrar();
+}
+
+public void changedUpdate(javax.swing.event.DocumentEvent e) {
+    filtrar();
+}
+     
+    });
+}
+
+private void filtrar() {
+    String text = jTextField1.getText();
+    if (text == null || text.trim().isEmpty()) {
+        sorter. setRowFilter(null);
+    } else {
+        try {
+            sorter.setRowFilter(RowFilter.regexFilter("(? i)" + java.util.regex.Pattern.quote(text)));
+        } catch (PatternSyntaxException ex) {
+            sorter.setRowFilter(null);
+        }
     }
 }
    
@@ -229,7 +274,6 @@ public void cargarDatosTabla() {
         } else {
             JOptionPane.showMessageDialog(this, "No se pudo eliminar el cultivo.", "Error", JOptionPane.ERROR_MESSAGE);
         }
-       
         
     }//GEN-LAST:event_btn_EliminarActionPerformed
 

@@ -4,10 +4,15 @@ import Controlador.ObservadorManager;
 import Controlador.VentanaControlador;
 import Modelo.Dto.ProductoAlmacenadoDTO;
 import java.util.List;
+import java.util.regex.PatternSyntaxException;
 import javax.swing.JOptionPane;
+import javax.swing.RowFilter;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.event.InternalFrameAdapter;
 import javax.swing.event.InternalFrameEvent;
+import javax.swing.table.TableRowSorter;
 
 /**
  *
@@ -16,6 +21,7 @@ import javax.swing.event.InternalFrameEvent;
 public class GestionProductoAlmacenado extends javax.swing.JInternalFrame implements TablaObserver {
     private VentanaControlador controlador;
     private ProductoAlmacenadoDTO productoSeleccionado; // Para la edición
+    private TableRowSorter<DefaultTableModel> sorter; // Para búsqueda
     
     public GestionProductoAlmacenado(VentanaControlador controlador) {
        initComponents();
@@ -29,12 +35,14 @@ public class GestionProductoAlmacenado extends javax.swing.JInternalFrame implem
            }
        });
        cargarDatosTabla(); 
+       configurarBuscador();
     }
     
     @Override
     public void actualizarTabla(String tipoEntidad) {
         if (tipoEntidad != null && tipoEntidad.equals("PRODUCTOALMACENADO")) {
             cargarDatosTabla();
+            filtrar();
         }
     }
      
@@ -57,6 +65,36 @@ public class GestionProductoAlmacenado extends javax.swing.JInternalFrame implem
             fila[5] = producto.getFechaEgreso();
 
             modeloTabla.addRow(fila);
+        }
+
+        if (sorter != null) {
+            sorter.setModel(modeloTabla);
+        }
+    }
+
+    // Configurar buscador
+    private void configurarBuscador() {
+        DefaultTableModel model = (DefaultTableModel) TablaAlmacenamiento.getModel();
+        sorter = new TableRowSorter<>(model);
+        TablaAlmacenamiento.setRowSorter(sorter);
+
+        jTextField1.getDocument().addDocumentListener(new DocumentListener() {
+            @Override public void insertUpdate(DocumentEvent e) { filtrar(); }
+            @Override public void removeUpdate(DocumentEvent e) { filtrar(); }
+            @Override public void changedUpdate(DocumentEvent e) { filtrar(); }
+        });
+    }
+
+    private void filtrar() {
+        String text = jTextField1.getText();
+        if (text == null || text.trim().isEmpty()) {
+            sorter.setRowFilter(null);
+        } else {
+            try {
+                sorter.setRowFilter(RowFilter.regexFilter("(?i)" + java.util.regex.Pattern.quote(text)));
+            } catch (PatternSyntaxException ex) {
+                sorter.setRowFilter(null);
+            }
         }
     }
 

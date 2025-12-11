@@ -96,7 +96,10 @@ public class VentanaControlador {
             return Collections.emptyList();
         }
     }
-
+  public List<ProduccionDTO> obtenerTodasLasProducciones() {
+        List<ProduccionDTO> lista = produccionService.obtenerTodasLasProducciones();
+        return lista != null ? lista : Collections.emptyList();
+    }
     public List<AlmacenamientoDTO> obtenerDatosAlmacenes() {
         try {
             return almacenamientoService.obtenerTodosLosAlmacenes();
