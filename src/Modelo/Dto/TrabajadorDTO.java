@@ -9,8 +9,7 @@ package Modelo.Dto;
  * @author isaac
  */
 public class TrabajadorDTO {
-
-    private int cedula;
+    private String cedula; 
     private String nombre;
     private String correo;
     private String telefono; 
@@ -21,7 +20,7 @@ public class TrabajadorDTO {
     public TrabajadorDTO() {
     }
 
-    public TrabajadorDTO(int cedula, String nombre, String correo, String telefono, String puesto, String horario, double salario) {
+    public TrabajadorDTO(String cedula, String nombre, String correo, String telefono, String puesto, String horario, double salario) {
         this.cedula = cedula;
         this.nombre = nombre;
         this.correo = correo;
@@ -31,14 +30,14 @@ public class TrabajadorDTO {
         this.salario = salario;
     }
 
-    // Getters y Setters...
-    public int getCedula() {
+    public String getCedula() {
         return cedula;
     }
 
-    public void setCedula(int cedula) {
+    public void setCedula(String cedula) {
         this.cedula = cedula;
     }
+
 
     public String getNombre() {
         return nombre;

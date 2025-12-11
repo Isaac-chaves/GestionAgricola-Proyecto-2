@@ -1,9 +1,4 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package Modelo.Mapper;
-
 
 import Modelo.Dto.AlmacenamientoDTO;
 import Modelo.Almacenamiento;
@@ -21,6 +16,8 @@ public class AlmacenamientoMapper {
         dto.setIdAlmacen(entidad.getIdAlmacen());
         dto.setNombre(entidad.getNombre());
         dto.setCapacidadKg(entidad.getCapacidadKg());
+        // **CORRECCIÓN:** Se añade la conversión de tipo.
+        dto.setTipo(entidad.getTipo());
         return dto;
     }
 
@@ -36,7 +33,8 @@ public class AlmacenamientoMapper {
         Almacenamiento entidad = new Almacenamiento(
             dto.getIdAlmacen(),
             dto.getNombre(),
-            dto.getCapacidadKg()
+            dto.getCapacidadKg(),
+            dto.getTipo() 
         );
         return entidad;
     }

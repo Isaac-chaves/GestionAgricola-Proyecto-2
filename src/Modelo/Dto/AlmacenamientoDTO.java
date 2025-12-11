@@ -1,25 +1,28 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package Modelo.Dto;
 
- 
-
- 
 public class AlmacenamientoDTO {
 
     private int idAlmacen;
     private String nombre;
     private double capacidadKg;
+    private String tipo; // AGREGADO
 
     public AlmacenamientoDTO() {
     }
 
-    public AlmacenamientoDTO(int idAlmacen, String nombre, double capacidadKg) {
+    // CONSTRUCTOR PARA NUEVOS REGISTROS (SIN ID)
+    public AlmacenamientoDTO(String nombre, double capacidadKg, String tipo) {
+        this.nombre = nombre;
+        this.capacidadKg = capacidadKg;
+        this.tipo = tipo;
+    }
+
+    // CONSTRUCTOR COMPLETO (CON ID)
+    public AlmacenamientoDTO(int idAlmacen, String nombre, double capacidadKg, String tipo) {
         this.idAlmacen = idAlmacen;
         this.nombre = nombre;
         this.capacidadKg = capacidadKg;
+        this.tipo = tipo;
     }
 
     public int getIdAlmacen() {
@@ -44,5 +47,14 @@ public class AlmacenamientoDTO {
 
     public void setCapacidadKg(double capacidadKg) {
         this.capacidadKg = capacidadKg;
+    }
+    
+    // GETTER Y SETTER PARA TIPO (AGREGADO)
+    public String getTipo() {
+        return tipo;
+    }
+
+    public void setTipo(String tipo) {
+        this.tipo = tipo;
     }
 }

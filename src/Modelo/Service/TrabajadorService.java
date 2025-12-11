@@ -1,10 +1,9 @@
 package Modelo.Service;
 
-
-import Modelo.Usuarios.Trabajador; //
-import Modelo.Dao.TrabajadorDAO; //
-import Modelo.Dto.TrabajadorDTO; //
-import Modelo.Mapper.TrabajadorMapper; //
+import Modelo.Usuarios.Trabajador; 
+import Modelo.Dao.TrabajadorDAO; 
+import Modelo.Dto.TrabajadorDTO; 
+import Modelo.Mapper.TrabajadorMapper; 
 import java.util.List;
 
 public class TrabajadorService {
@@ -16,8 +15,10 @@ public class TrabajadorService {
         return TrabajadorMapper.toDTOList(entidades); 
     }
 
-  public String obtenerNombrePorCedula(int cedula) {
+    // CORRECCIÓN: Ahora acepta String (VARCHAR de la BD)
+    public String obtenerNombrePorCedula(String cedula) {
         try {
+            // Asumiendo que trabajadorDAO.seleccionarPorCedula recibe String
             Trabajador entidad = trabajadorDAO.seleccionarPorCedula(cedula); 
             
             if (entidad != null) {
@@ -37,6 +38,7 @@ public class TrabajadorService {
             return false;
         }
         
+        // Se asume que el DAO también usa String para la cédula.
         Trabajador nuevoTrabajador = TrabajadorMapper.toEntidad(trabajadorDTO); 
         return trabajadorDAO.insertar(nuevoTrabajador); 
     }
@@ -46,7 +48,27 @@ public class TrabajadorService {
         return trabajadorDAO.actualizar(trabajadorActualizado); 
     }
 
-    public boolean eliminarTrabajador(int cedula) {
+    // CORRECCIÓN: Ahora acepta String
+    public boolean eliminarTrabajador(String cedula) {
+        // Asumiendo que trabajadorDAO.eliminar recibe String
         return trabajadorDAO.eliminar(cedula); 
+    }
+
+    /**
+     * Comprueba si ya existe un trabajador con la cédula dada.
+     * @param cedula cédula a buscar
+     * @return true si existe, false si no existe o en caso de error
+     */
+    public boolean existePorCedula(String cedula) {
+        if (cedula == null || cedula.trim().isEmpty()) {
+            return false;
+        }
+        try {
+            Trabajador entidad = trabajadorDAO.seleccionarPorCedula(cedula.trim());
+            return entidad != null;
+        } catch (Exception e) {
+            System.err.println("Error en TrabajadorService.existePorCedula: " + e.getMessage());
+            return false;
+        }
     }
 }

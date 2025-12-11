@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package Modelo;
 
 import java.time.LocalDate;
@@ -12,8 +8,10 @@ import java.time.LocalDate;
  */
 public class GestionAlmacen extends Almacenamiento {
 
-    public GestionAlmacen(int id, String nombre, double capacidadKg) {
-        super(id, nombre, capacidadKg);
+    // **CORRECCIÓN:** Se añade el parámetro 'tipo' al constructor.
+    // Llama al constructor de Almacenamiento con 4 parámetros.
+    public GestionAlmacen(int id, String nombre, double capacidadKg, String tipo) {
+        super(id, nombre, capacidadKg, tipo);
     }
 
     public boolean agregarProducto(ProductoAlmacenado producto) {
@@ -28,5 +26,4 @@ public class GestionAlmacen extends Almacenamiento {
     public boolean Alerta(ProductoAlmacenado producto, int diasMaximo) {
         return producto.getFechaIngreso().plusDays(diasMaximo).isBefore(LocalDate.now());
     }
-
-} 
+}

@@ -1,23 +1,32 @@
 package Modelo.Dto;
 
-
-/**
- *
- * @author isaac
- */
 public class DistribucionDTO {
 
+    // CAMPOS DE LA CLASE
     private int idDistribucion;
     private int idProductoAlmacenado; 
     private double cantidad;
     private String destino;
     private String fechaDistribucion;
-    private int idTrabajadorResponsable; 
-
+    private String idTrabajadorResponsable; 
+    
+    // CONSTRUCTOR VACÍO
     public DistribucionDTO() {
     }
 
-    public DistribucionDTO(int idDistribucion, int idProductoAlmacenado, double cantidad, String destino, String fechaDistribucion, int idTrabajadorResponsable) {
+    // CONSTRUCTOR PARA INSERCIÓN (SIN ID) - 5 PARÁMETROS
+    // Este constructor lo usa DistribucionMapper.toEntidadSinId
+    public DistribucionDTO(int idProductoAlmacenado, double cantidad, String destino, String fechaDistribucion, String idTrabajadorResponsable) {
+        this.idProductoAlmacenado = idProductoAlmacenado;
+        this.cantidad = cantidad;
+        this.destino = destino;
+        this.fechaDistribucion = fechaDistribucion;
+        this.idTrabajadorResponsable = idTrabajadorResponsable;
+    }
+    
+    // CONSTRUCTOR COMPLETO (CON ID) - 6 PARÁMETROS
+    // Este constructor lo usa DistribucionMapper.toDTO y DistribucionMapper.toEntidad
+    public DistribucionDTO(int idDistribucion, int idProductoAlmacenado, double cantidad, String destino, String fechaDistribucion, String idTrabajadorResponsable) {
         this.idDistribucion = idDistribucion;
         this.idProductoAlmacenado = idProductoAlmacenado;
         this.cantidad = cantidad;
@@ -26,8 +35,8 @@ public class DistribucionDTO {
         this.idTrabajadorResponsable = idTrabajadorResponsable;
     }
 
-    // --- Getters y Setters ---
-
+    // GETTERS Y SETTERS
+    
     public int getIdDistribucion() {
         return idDistribucion;
     }
@@ -68,11 +77,11 @@ public class DistribucionDTO {
         this.fechaDistribucion = fechaDistribucion;
     }
 
-    public int getIdTrabajadorResponsable() {
+    public String getIdTrabajadorResponsable() {
         return idTrabajadorResponsable;
     }
 
-    public void setIdTrabajadorResponsable(int idTrabajadorResponsable) {
+    public void setIdTrabajadorResponsable(String idTrabajadorResponsable) {
         this.idTrabajadorResponsable = idTrabajadorResponsable;
     }
 }

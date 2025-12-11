@@ -4,49 +4,70 @@
  */
 package Vista;
 
+import Controlador.ObservadorManager;
+import Controlador.ObservadorTipos;
 import Controlador.VentanaControlador;
 import Modelo.Dto.TrabajadorDTO;
-import Vista.AgregarJdialog.AgregarCultivo;
-import Vista.AgregarJdialog.AgregarEmpleados;
-import Vista.EditarJdialog.EditarEmpleados;
 import java.util.List;
+import javax.swing.JOptionPane;
+import javax.swing.event.InternalFrameAdapter;
+import javax.swing.event.InternalFrameEvent;
 import javax.swing.table.DefaultTableModel;
 
 /**
  *
  * @author isaac
  */
-public class GestionEmpleados extends javax.swing.JInternalFrame {
-private VentanaControlador controlador;
+public class GestionEmpleados extends javax.swing.JInternalFrame implements TablaObserver {
+    private VentanaControlador controlador;
     /**
      * Creates new form Empleados
+     * @param controlador
      */
-   public GestionEmpleados(VentanaControlador controlador) {
-    initComponents();
-    this.controlador = controlador;
-    cargarDatosTabla(); 
-}
+    public GestionEmpleados(VentanaControlador controlador) {
+        initComponents();
+        this.controlador = controlador;
+        cargarDatosTabla(); 
 
-public void cargarDatosTabla() {
-    DefaultTableModel modeloTabla = (DefaultTableModel) TablaEmpleados.getModel(); 
-    modeloTabla.setRowCount(0); 
-
-    List<TrabajadorDTO> listaTrabajadores = controlador.obtenerDatosTrabajadores();
-
-    // FILAS BASADAS EN TrabajadorDTO
-    for (TrabajadorDTO trabajador : listaTrabajadores) {
-        Object[] fila = new Object[7]; 
-        fila[0] = trabajador.getCedula(); 
-        fila[1] = trabajador.getNombre(); 
-        fila[2] = trabajador.getCorreo(); 
-        fila[3] = trabajador.getTelefono(); 
-        fila[4] = trabajador.getPuesto(); 
-        fila[5] = trabajador.getHorario(); 
-        fila[6] = trabajador.getSalario(); // double
-
-        modeloTabla.addRow(fila);
+        // INICIO: REGISTRO OBSERVER
+        ObservadorManager.getInstancia().registrarObservador((TablaObserver) this); 
+        this.addInternalFrameListener(new InternalFrameAdapter() {
+            @Override
+            public void internalFrameClosed(InternalFrameEvent e) {
+                ObservadorManager.getInstancia().eliminarObservador((TablaObserver) GestionEmpleados.this);
+            }
+        });
     }
-}
+
+    @Override
+    public void actualizarTabla(String tipoEntidad) {
+        // Usar constantes centralizadas
+        if (tipoEntidad != null && tipoEntidad.equals(ObservadorTipos.TRABAJADORES)) {
+            cargarDatosTabla();
+        }
+    }
+
+    public void cargarDatosTabla() {
+        DefaultTableModel modeloTabla = (DefaultTableModel) TablaEmpleados.getModel(); 
+        modeloTabla.setRowCount(0); 
+
+        List<TrabajadorDTO> listaTrabajadores = controlador.obtenerDatosTrabajadores();
+
+        // FILAS BASADAS EN TrabajadorDTO
+        for (TrabajadorDTO trabajador : listaTrabajadores) {
+            Object[] fila = new Object[7]; 
+            fila[0] = trabajador.getCedula(); 
+            fila[1] = trabajador.getNombre(); 
+            fila[2] = trabajador.getCorreo(); 
+            fila[3] = trabajador.getTelefono(); 
+            fila[4] = trabajador.getPuesto(); 
+            fila[5] = trabajador.getHorario(); 
+            fila[6] = trabajador.getSalario(); // double
+
+            modeloTabla.addRow(fila);
+        }
+    }
+
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -62,7 +83,7 @@ public void cargarDatosTabla() {
         TablaEmpleados = new javax.swing.JTable();
         jTextField1 = new javax.swing.JTextField();
         btnEditar = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
+        Btn_eliminar = new javax.swing.JButton();
         btnAgregar = new javax.swing.JButton();
 
         setClosable(true);
@@ -118,10 +139,10 @@ public void cargarDatosTabla() {
             }
         });
 
-        jButton3.setText("Eliminar");
-        jButton3.addActionListener(new java.awt.event.ActionListener() {
+        Btn_eliminar.setText("Eliminar");
+        Btn_eliminar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton3ActionPerformed(evt);
+                Btn_eliminarActionPerformed(evt);
             }
         });
 
@@ -147,7 +168,7 @@ public void cargarDatosTabla() {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(btnEditar)
-                    .addComponent(jButton3))
+                    .addComponent(Btn_eliminar))
                 .addContainerGap(16, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
@@ -165,7 +186,7 @@ public void cargarDatosTabla() {
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(btnEditar)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton3)))
+                        .addComponent(Btn_eliminar)))
                 .addContainerGap())
         );
 
@@ -183,9 +204,34 @@ public void cargarDatosTabla() {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+    private void Btn_eliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Btn_eliminarActionPerformed
     
-    }//GEN-LAST:event_jButton3ActionPerformed
+      
+        int fila = TablaEmpleados.getSelectedRow();
+        if (fila == -1) {
+            JOptionPane.showMessageDialog(this, "Seleccione un empleado para eliminar.", "Advertencia", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        DefaultTableModel modelo = (DefaultTableModel) TablaEmpleados.getModel();
+        Object cedObj = modelo.getValueAt(fila, 0);
+        if (cedObj == null) {
+            JOptionPane.showMessageDialog(this, "Cédula inválida.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        String cedula = String.valueOf(cedObj);
+
+        int opcion = JOptionPane.showConfirmDialog(this, "¿Confirma eliminar al empleado seleccionado?", "Confirmar eliminación", JOptionPane.YES_NO_OPTION);
+        if (opcion != JOptionPane.YES_OPTION) return;
+
+        boolean ok = controlador.eliminarTrabajador(cedula);
+        if (ok) {
+            JOptionPane.showMessageDialog(this, "Empleado eliminado correctamente.");
+            cargarDatosTabla();
+        } else {
+            JOptionPane.showMessageDialog(this, "No se pudo eliminar el empleado.", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+        
+    }//GEN-LAST:event_Btn_eliminarActionPerformed
 
     private void btnEditarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditarActionPerformed
 
@@ -201,10 +247,10 @@ public void cargarDatosTabla() {
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton Btn_eliminar;
     private javax.swing.JTable TablaEmpleados;
     private javax.swing.JButton btnAgregar;
     private javax.swing.JButton btnEditar;
-    private javax.swing.JButton jButton3;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTextField jTextField1;

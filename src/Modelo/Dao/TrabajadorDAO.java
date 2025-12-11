@@ -1,9 +1,4 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package Modelo.Dao;
-
 
 import Modelo.ConexionBD;
 import Modelo.Usuarios.Trabajador;
@@ -14,11 +9,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-
-/**
- *
- * @author isaac
- */
 public class TrabajadorDAO {
 
     public boolean insertar(Trabajador trabajador) {
@@ -26,10 +16,11 @@ public class TrabajadorDAO {
         try (Connection conn = ConexionBD.getInstance().getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
-            ps.setInt(1, trabajador.getCedula());
+            // CORRECCIÓN: Usar setString para la cédula (VARCHAR)
+            ps.setString(1, trabajador.getCedula()); 
             ps.setString(2, trabajador.getNombre());
             ps.setString(3, trabajador.getCorreo());
-           ps.setString(4, trabajador.getTelefono());
+            ps.setString(4, trabajador.getTelefono());
             ps.setString(5, trabajador.getPuesto());
             ps.setString(6, trabajador.getHorario());
             ps.setDouble(7, trabajador.getSalario());
@@ -41,18 +32,20 @@ public class TrabajadorDAO {
         }
     }
 
-    public Trabajador seleccionarPorCedula(int cedula) {
+    // CORRECCIÓN: Recibir String para la cédula y usar getString en ResultSet
+    public Trabajador seleccionarPorCedula(String cedula) {
         String sql = "SELECT cedula, nombre, correo, telefono, puesto, horario, salario FROM trabajadores WHERE cedula = ?";
         Trabajador trabajador = null;
 
         try (Connection conn = ConexionBD.getInstance().getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
-            ps.setInt(1, cedula);
+            ps.setString(1, cedula);
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
+                    // CORRECCIÓN: Usar getString para la cédula (VARCHAR)
                     trabajador = new Trabajador(
-                        rs.getInt("cedula"),
+                        rs.getString("cedula"), 
                         rs.getString("puesto"),
                         rs.getString("horario"),
                         rs.getDouble("salario"),
@@ -77,8 +70,9 @@ public class TrabajadorDAO {
              ResultSet rs = ps.executeQuery()) {
 
             while (rs.next()) {
+                 // CORRECCIÓN: Usar getString para la cédula (VARCHAR)
                 Trabajador trabajador = new Trabajador(
-                    rs.getInt("cedula"),
+                    rs.getString("cedula"), 
                     rs.getString("puesto"),
                     rs.getString("horario"),
                     rs.getDouble("salario"),
@@ -93,7 +87,8 @@ public class TrabajadorDAO {
         }
         return trabajadores;
     }
-    public boolean actualizar(Trabajador trabajador) {
+    
+   public boolean actualizar(Trabajador trabajador) {
         String sql = "UPDATE trabajadores SET nombre = ?, correo = ?, telefono = ?, puesto = ?, horario = ?, salario = ? WHERE cedula = ?";
         try (Connection conn = ConexionBD.getInstance().getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -104,7 +99,8 @@ public class TrabajadorDAO {
             ps.setString(4, trabajador.getPuesto());
             ps.setString(5, trabajador.getHorario());
             ps.setDouble(6, trabajador.getSalario());
-            ps.setInt(7, trabajador.getCedula()); 
+            // CORRECCIÓN: Usar setString para la cédula (VARCHAR) en el WHERE
+            ps.setString(7, trabajador.getCedula()); 
 
             return ps.executeUpdate() > 0;
         } catch (SQLException e) {
@@ -113,12 +109,12 @@ public class TrabajadorDAO {
         }
     }
     
-    public boolean eliminar(int cedula) {
+    public boolean eliminar(String cedula) {
         String sql = "DELETE FROM trabajadores WHERE cedula = ?";
         try (Connection conn = ConexionBD.getInstance().getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
-            ps.setInt(1, cedula);
+            ps.setString(1, cedula); 
 
             return ps.executeUpdate() > 0;
         } catch (SQLException e) {

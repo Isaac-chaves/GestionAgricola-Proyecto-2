@@ -9,15 +9,15 @@ package Modelo.Usuarios;
  * @author UTN
  */
 public class Trabajador {
-    private int cedula;
+    private String cedula;
     private String puesto;
     private String horario;
     private double salario;
-     private String Nombre;
+    private String Nombre;
     private String Correo;
     private String Telefono;
 
-    public Trabajador(int cedula, String puesto, String horario, double salario, String Nombre, String Correo, String Telefono) {
+    public Trabajador(String cedula, String puesto, String horario, double salario, String Nombre, String Correo, String Telefono) {
         this.cedula = cedula;
         this.puesto = puesto;
         this.horario = horario;
@@ -43,9 +43,11 @@ public class Trabajador {
         return salario;
     }
 
-    public int getCedula() {
+    public String getCedula() {
         return cedula;
     }
+
+    
 
     public String getNombre() {
         return Nombre;

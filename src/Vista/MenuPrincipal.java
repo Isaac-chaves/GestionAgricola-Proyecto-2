@@ -80,6 +80,7 @@ private void inicializarComponentes() {
         jMenu1 = new javax.swing.JMenu();
         jMenuproducto = new javax.swing.JMenuItem();
         jMenuAlmacenes = new javax.swing.JMenuItem();
+        jMenuItem1 = new javax.swing.JMenuItem();
         jMenuDistribuccion = new javax.swing.JMenuItem();
         cerrarSession = new javax.swing.JMenuItem();
         Empleados = new javax.swing.JMenu();
@@ -146,6 +147,14 @@ private void inicializarComponentes() {
             }
         });
         jMenu1.add(jMenuAlmacenes);
+
+        jMenuItem1.setText("Productos Almacenados");
+        jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem1ActionPerformed(evt);
+            }
+        });
+        jMenu1.add(jMenuItem1);
 
         JmenuAgricola.add(jMenu1);
 
@@ -251,6 +260,10 @@ controlador.abrirGestionCultivo();
 
     }//GEN-LAST:event_jmenuAyudaActionPerformed
 
+    private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
+controlador.abrirGestionProductoAlmacenado();        // TODO add your handling code here:
+    }//GEN-LAST:event_jMenuItem1ActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -308,6 +321,7 @@ controlador.abrirGestionCultivo();
     private javax.swing.JMenuBar jMenuBar2;
     private javax.swing.JMenuItem jMenuDistribuccion;
     private javax.swing.JMenuItem jMenuEmpleado;
+    private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JMenuItem jMenuItem7;
     private javax.swing.JMenuItem jMenuproducto;

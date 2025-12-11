@@ -4,7 +4,12 @@
  */
 package Vista.EditarJdialog;
 
-import Vista.AgregarJdialog.*;
+import Controlador.ControladorBase;
+import Modelo.Dto.CultivoDTO;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+
 
 /**
  *
@@ -12,12 +17,32 @@ import Vista.AgregarJdialog.*;
  */
 public class EditarCultivo extends javax.swing.JDialog {
 
-    /**
-     * Creates new form Agregar
-     */
+    private final ControladorBase controladorBase = new ControladorBase();
+    private CultivoDTO cultivoActual;
+    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
     public EditarCultivo(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+    }
+
+    // Nuevo constructor que recibe DTO
+    public EditarCultivo(java.awt.Frame parent, boolean modal, CultivoDTO cultivo) {
+        super(parent, modal);
+        initComponents();
+        setCultivo(cultivo);
+    }
+
+    public void setCultivo(CultivoDTO cultivo) {
+        this.cultivoActual = cultivo;
+        if (cultivoActual != null) {
+            // El diálogo original tiene solo dos campos visibles: jTextField2 (fecha) y jTextField3 (area)
+            jTextField3.setText(String.valueOf(cultivoActual.getAreaSembrada()));
+            // Prellenar fecha de cosecha en formato yyyy-MM-dd (coincide con DB)
+            if (cultivoActual.getFechaCosecha() != null) {
+                jTextField2.setText(cultivoActual.getFechaCosecha());
+            }
+        }
     }
 
     /**
@@ -120,21 +145,18 @@ public class EditarCultivo extends javax.swing.JDialog {
             return;
         }
 
-        // Validación de fecha: DD-MM-YYYY
-        if (!fecha.matches("^\\d{2}-\\d{2}-\\d{4}$")) {
+        // Validación de fecha: yyyy-MM-dd
+        if (!fecha.matches("^\\d{4}-\\d{2}-\\d{2}$")) {
             javax.swing.JOptionPane.showMessageDialog(this,
-                    "La fecha debe tener el formato DD-MM-YYYY (ejemplo: 18-01-2025).",
+                    "La fecha debe tener el formato YYYY-MM-DD (ejemplo: 2025-01-18).",
                     "Error", javax.swing.JOptionPane.ERROR_MESSAGE);
             return;
         }
 
         // Validar que la fecha sea real (que el día y mes existan)
         try {
-            java.time.format.DateTimeFormatter formatter
-                    = java.time.format.DateTimeFormatter.ofPattern("dd-MM-yyyy");
-
-            java.time.LocalDate.parse(fecha, formatter);
-        } catch (Exception e) {
+            LocalDate.parse(fecha, formatter);
+        } catch (DateTimeParseException e) {
             javax.swing.JOptionPane.showMessageDialog(this,
                     "La fecha ingresada no es válida. Verifica día, mes y año.",
                     "Error", javax.swing.JOptionPane.ERROR_MESSAGE);

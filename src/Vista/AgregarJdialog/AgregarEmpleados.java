@@ -4,6 +4,11 @@
  */
 package Vista.AgregarJdialog;
 
+import Controlador.ControladorBase;
+import Controlador.ObservadorManager;
+import Modelo.Dto.TrabajadorDTO;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import javax.swing.JOptionPane;
 
 /**
@@ -11,7 +16,7 @@ import javax.swing.JOptionPane;
  * @author isaac
  */
 public class AgregarEmpleados extends javax.swing.JDialog {
-
+private final ControladorBase controladorBase = new ControladorBase();
     /**
      * Creates new form Agregar
      */
@@ -19,7 +24,12 @@ public class AgregarEmpleados extends javax.swing.JDialog {
         super(parent, modal);
         initComponents();
     }
-
+private boolean esCorreoValido(String email) {
+        String regex = "^[A-Za-z0-9+_.-]+@(.+)$";
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(email);
+        return matcher.matches();
+    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -171,9 +181,9 @@ public class AgregarEmpleados extends javax.swing.JDialog {
                 .addComponent(jLabel6)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jTextFieldCorreo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(56, 56, 56)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(24, 24, 24))
+                .addGap(21, 21, 21))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -191,70 +201,68 @@ public class AgregarEmpleados extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-
+   
+       String cedula = jTextFieldCedula.getText().trim();
         String nombre = jTextFieldNombre.getText().trim();
+        String horario = jTextFieldHorario.getText().trim();
         String puesto = jTextFieldPuesto.getText().trim();
+        String salarioStr = jTextFieldSalario.getText().trim();
         String telefono = jTextFieldTelefono.getText().trim();
         String correo = jTextFieldCorreo.getText().trim();
-        String cedula = jTextFieldCedula.getText().trim();
-        String salarioStr = jTextFieldSalario.getText().trim();
-        String horario = jTextFieldHorario.getText().trim();
 
-        // Validación nombre
-        if (nombre.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Debe ingresar el nombre.");
+        // 2. VALIDACIONES BÁSICAS
+        if (cedula.isEmpty() || nombre.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Cédula y nombre son obligatorios.", "Validación", JOptionPane.WARNING_MESSAGE);
             return;
         }
 
-        // Validación puesto
-        if (puesto.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Debe ingresar el puesto.");
-            return;
-        }
-
-        // Validación teléfono CR: 8 dígitos
-        if (!telefono.matches("\\d{8}")) {
-            JOptionPane.showMessageDialog(this, "El teléfono debe tener 8 dígitos (Costa Rica).");
-            return;
-        }
-
-        // Validación correo básico
-        if (!correo.matches("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$")) {
-            JOptionPane.showMessageDialog(this, "Ingrese un correo válido (ejemplo@gmail.com).");
-            return;
-        }
-
-        // Validación cédula CR: 9 dígitos
-        if (!cedula.matches("\\d{9}")) {
-            JOptionPane.showMessageDialog(this, "La cédula debe tener 9 dígitos (Costa Rica).");
-            return;
-        }
-
-        // Validación salario
-        double salario;
+        // 2.a: comprobar si cedula ya existe
         try {
-            salario = Double.parseDouble(salarioStr);
-            if (salario < 0) {
-                JOptionPane.showMessageDialog(this, "El salario no puede ser negativo.");
+            if (controladorBase.existeTrabajadorPorCedula(cedula)) {
+                JOptionPane.showMessageDialog(this, "Ya existe un trabajador con la cédula indicada.", "Duplicado", JOptionPane.WARNING_MESSAGE);
                 return;
             }
-        } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(this, "El salario debe ser un número válido.");
+        } catch (Exception ex) {
+            // Si falla la comprobación no bloqueamos, pero alertamos y seguimos (opcional)
+            System.err.println("Error comprobando existencia de cédula: " + ex.getMessage());
+        }
+
+        double salario = 0.0;
+        if (!salarioStr.isEmpty()) {
+            try {
+                salario = Double.parseDouble(salarioStr);
+                if (salario < 0) {
+                    JOptionPane.showMessageDialog(this, "El salario no puede ser negativo.", "Validación", JOptionPane.WARNING_MESSAGE);
+                    return;
+                }
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(this, "Formato de salario inválido. Use números (ej. 450000.00).", "Validación", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+        }
+
+        if (!correo.isEmpty() && !esCorreoValido(correo)) {
+            JOptionPane.showMessageDialog(this, "Correo electrónico con formato inválido.", "Validación", JOptionPane.WARNING_MESSAGE);
             return;
         }
 
-        // Validación horario
-        if (horario.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Debe ingresar el horario.");
-            return;
+        // 3. CREAR DTO Y GUARDAR usando ControladorBase
+        try {
+            TrabajadorDTO trabajadorDTO = new TrabajadorDTO(cedula, nombre, correo, telefono, puesto, horario, salario);
+            boolean ok = controladorBase.guardarTrabajador(trabajadorDTO);
+            if (ok) {
+                JOptionPane.showMessageDialog(this, "Trabajador guardado correctamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+                ObservadorManager.getInstancia().notificarCambio("TRABAJADORES");
+                this.dispose();
+            } else {
+                JOptionPane.showMessageDialog(this, "No se pudo guardar el trabajador. Verifique datos o conexión a BD.", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Ocurrió un error inesperado: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
         }
-
-        // ⬇️ Aquí ya pasó todas las validaciones
-        JOptionPane.showMessageDialog(this, "Datos correctos ✔️");
-
-        // AQUÍ LLAMÁS AL CONTROLADOR
-        // controlador.guardar(nombre, puesto, telefono, correo, cedula, salario, horario);
-
+        
+        
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jTextFieldTelefonoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextFieldTelefonoActionPerformed

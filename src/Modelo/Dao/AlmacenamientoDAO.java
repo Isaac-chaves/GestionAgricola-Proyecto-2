@@ -1,9 +1,4 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package Modelo.Dao;
-
 
 import Modelo.Almacenamiento;
 import Modelo.ConexionBD;
@@ -21,12 +16,16 @@ import java.util.List;
 public class AlmacenamientoDAO {
     
     public boolean insertar(Almacenamiento almacen) {
-        String sql = "INSERT INTO almacenes (nombre, capacidad_kg) VALUES (?, ?)";
+        String sql = "INSERT INTO almacenes (nombre, capacidad_kg, tipo) VALUES (?, ?, ?)";
         try (Connection conn = ConexionBD.getInstance().getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
+            // Parámetro 1
             ps.setString(1, almacen.getNombre());
+            // Parámetro 2
             ps.setDouble(2, almacen.getCapacidadKg());
+            // Parámetro 3 (Ya estaba bien)
+            ps.setString(3, almacen.getTipo()); 
 
             return ps.executeUpdate() > 0;
         } catch (SQLException e) {
@@ -36,9 +35,9 @@ public class AlmacenamientoDAO {
     }
 
     public Almacenamiento seleccionarPorId(int id) {
-        String sql = "SELECT id_almacen, nombre, capacidad_kg FROM almacenes WHERE id_almacen = ?";
+        // La sentencia SQL incluye 'tipo'
+        String sql = "SELECT id_almacen, nombre, capacidad_kg, tipo FROM almacenes WHERE id_almacen = ?";
         Almacenamiento almacen = null;
-
         try (Connection conn = ConexionBD.getInstance().getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
@@ -48,7 +47,9 @@ public class AlmacenamientoDAO {
                     almacen = new Almacenamiento(
                         rs.getInt("id_almacen"),
                         rs.getString("nombre"),
-                        rs.getDouble("capacidad_kg")
+                        rs.getDouble("capacidad_kg"),
+                        // **CORRECCIÓN:** Se añade el campo 'tipo' al constructor
+                        rs.getString("tipo") 
                     );
                 }
             }
@@ -57,10 +58,11 @@ public class AlmacenamientoDAO {
         }
         return almacen;
     }
-    
+
     public List<Almacenamiento> seleccionarTodos() {
         List<Almacenamiento> almacenes = new ArrayList<>();
-        String sql = "SELECT id_almacen, nombre, capacidad_kg FROM almacenes";
+        // La sentencia SQL incluye 'tipo'
+        String sql = "SELECT id_almacen, nombre, capacidad_kg, tipo FROM almacenes";
 
         try (Connection conn = ConexionBD.getInstance().getConnection();
              PreparedStatement ps = conn.prepareStatement(sql);
@@ -70,7 +72,9 @@ public class AlmacenamientoDAO {
                 Almacenamiento almacen = new Almacenamiento(
                     rs.getInt("id_almacen"),
                     rs.getString("nombre"),
-                    rs.getDouble("capacidad_kg")
+                    rs.getDouble("capacidad_kg"),
+                    // **CORRECCIÓN:** Se añade el campo 'tipo' al constructor
+                    rs.getString("tipo") 
                 );
                 almacenes.add(almacen);
             }
@@ -81,13 +85,16 @@ public class AlmacenamientoDAO {
     }
 
     public boolean actualizar(Almacenamiento almacen) {
-        String sql = "UPDATE almacenes SET nombre = ?, capacidad_kg = ? WHERE id_almacen = ?";
+        // La sentencia SQL incluye 'tipo'
+        String sql = "UPDATE almacenes SET nombre = ?, capacidad_kg = ?, tipo = ? WHERE id_almacen = ?";
         try (Connection conn = ConexionBD.getInstance().getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setString(1, almacen.getNombre());
             ps.setDouble(2, almacen.getCapacidadKg());
-            ps.setInt(3, almacen.getIdAlmacen());
+            // **CORRECCIÓN:** Se agrega el Parámetro 3 (tipo)
+            ps.setString(3, almacen.getTipo());
+            ps.setInt(4, almacen.getIdAlmacen());
 
             return ps.executeUpdate() > 0;
         } catch (SQLException e) {

@@ -4,18 +4,90 @@
  */
 package Vista.AgregarJdialog;
 
+import Controlador.ControladorBase;
+import Modelo.Dto.DistribucionDTO;
+import Modelo.Dto.ProductoAlmacenadoDTO;
+import Modelo.Dto.TrabajadorDTO;
+import Modelo.Service.CultivoService;
+import Modelo.Service.ProductoAlmacenadoService;
+import Modelo.Service.TrabajadorService;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+import javax.swing.JOptionPane;
+
 /**
  *
  * @author isaac
  */
 public class AgregarDistribucion extends javax.swing.JDialog {
 
+    private final CultivoService cultivoService = new CultivoService();
+    private final TrabajadorService trabajadorService = new TrabajadorService();
+    private final ProductoAlmacenadoService productoAlmacenadoService = new ProductoAlmacenadoService(); // Servicio para productos
+    private final ControladorBase ControladorBase = new ControladorBase(); // INSTANCIA DEL CONTROLADOR
+    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
     /**
      * Creates new form Agregar
+     *
+     * @param parent
+     * @param modal
      */
     public AgregarDistribucion(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        cargarComboBoxes();
+    }
+
+    private void cargarComboBoxes() {
+        jComboAlmacen.removeAllItems();
+        jComboResponsable.removeAllItems();
+        try {
+            // Poblar SOLO con productos almacenados (NO añadir cultivos aquí)
+            java.util.List<ProductoAlmacenadoDTO> productos = productoAlmacenadoService.obtenerTodosLosProductosAlmacenados();
+            if (productos != null) {
+                for (ProductoAlmacenadoDTO producto : productos) {
+                    String item = producto.getIdProductoAlmacenado()
+                            + ": " + producto.getNombreCultivo()
+                            + " (Cant: " + producto.getCantidadKg() + " kg)";
+                    jComboAlmacen.addItem(item);
+                }
+            }
+        } catch (Exception e) {
+            System.err.println("Error al cargar productos almacenados: " + e.getMessage());
+        }
+
+        try {
+            java.util.List<TrabajadorDTO> trabajadores = trabajadorService.obtenerTodosLosTrabajadores();
+            for (TrabajadorDTO trabajador : trabajadores) {
+                // almacenar en el combo "cedula: nombre"
+                if (trabajador != null) {
+                    jComboResponsable.addItem(trabajador.getCedula() + ": " + trabajador.getNombre());
+                }
+            }
+        } catch (Exception e) {
+            System.err.println("Error al cargar responsables: " + e.getMessage());
+        }
+    }
+
+    private int extractId(String item) {
+        if (item == null || item.isEmpty()) {
+            return -1;
+        }
+        try {
+            return Integer.parseInt(item.split(":")[0].trim());
+        } catch (NumberFormatException e) {
+            return -1;
+        }
+    }
+
+    // Método auxiliar para extraer el ID de un trabajador (que es un String, ej: CÉDULA)
+    private String extractTrabajadorId(String item) {
+        if (item == null || item.isEmpty()) {
+            return null;
+        }
+        return item.split(":")[0].trim();
     }
 
     /**
@@ -28,53 +100,56 @@ public class AgregarDistribucion extends javax.swing.JDialog {
     private void initComponents() {
 
         jPanel1 = new javax.swing.JPanel();
-        jTextField1 = new javax.swing.JTextField();
-        jTextField3 = new javax.swing.JTextField();
-        jButton1 = new javax.swing.JButton();
+        jTextDestino = new javax.swing.JTextField();
+        btnAgregar = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
-        jTextField2 = new javax.swing.JTextField();
+        jTextCantidad = new javax.swing.JTextField();
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
-        jTextField4 = new javax.swing.JTextField();
         jLabel5 = new javax.swing.JLabel();
-        jComboBox1 = new javax.swing.JComboBox<>();
+        jComboAlmacen = new javax.swing.JComboBox<>();
+        jComboResponsable = new javax.swing.JComboBox<>();
+        jTextFechaDistribucion = new javax.swing.JTextField();
+        jLabel6 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         jPanel1.setBackground(new java.awt.Color(153, 204, 255));
 
-        jTextField1.setBackground(new java.awt.Color(204, 204, 204));
+        jTextDestino.setBackground(new java.awt.Color(204, 204, 204));
 
-        jTextField3.setBackground(new java.awt.Color(204, 204, 204));
-
-        jButton1.setText("Agregar");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        btnAgregar.setText("Agregar");
+        btnAgregar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                btnAgregarActionPerformed(evt);
             }
         });
 
-        jLabel1.setText("Cantidad");
+        jLabel1.setText("Cantidad (Kg)");
 
         jLabel2.setText("Cultivo");
 
-        jTextField2.setBackground(new java.awt.Color(204, 204, 204));
+        jTextCantidad.setBackground(new java.awt.Color(204, 204, 204));
 
-        jLabel3.setText("Destino");
+        jLabel3.setText("Fecha de Distribucion");
 
-        jLabel4.setText("Responsable");
+        jLabel4.setText("Trabajador Responsable");
 
-        jTextField4.setBackground(new java.awt.Color(204, 204, 204));
+        jLabel5.setText("Almacen");
 
-        jLabel5.setText("ID del Almacen ");
-
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "2", "1" }));
-        jComboBox1.addActionListener(new java.awt.event.ActionListener() {
+        jComboAlmacen.setBackground(new java.awt.Color(204, 204, 204));
+        jComboAlmacen.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jComboBox1ActionPerformed(evt);
+                jComboAlmacenActionPerformed(evt);
             }
         });
+
+        jComboResponsable.setBackground(new java.awt.Color(204, 204, 204));
+
+        jTextFechaDistribucion.setBackground(new java.awt.Color(204, 204, 204));
+
+        jLabel6.setText("Destino");
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -83,114 +158,151 @@ public class AgregarDistribucion extends javax.swing.JDialog {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(12, 12, 12)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 153, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGap(65, 65, 65)
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, 141, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 69, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 74, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGap(114, 114, 114)
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, 141, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                            .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(134, 134, 134)
+                        .addGap(229, 229, 229)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 137, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jTextFechaDistribucion, javax.swing.GroupLayout.PREFERRED_SIZE, 224, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(39, 39, 39)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(btnAgregar, javax.swing.GroupLayout.PREFERRED_SIZE, 429, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(jTextCantidad, javax.swing.GroupLayout.PREFERRED_SIZE, 74, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jTextDestino)
+                                    .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jComboAlmacen, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                                        .addGap(6, 6, 6)
+                                        .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 69, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addGap(18, 18, 18)
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel4)
+                                    .addComponent(jComboResponsable, javax.swing.GroupLayout.PREFERRED_SIZE, 233, javax.swing.GroupLayout.PREFERRED_SIZE))))))
+                .addContainerGap(49, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(18, 18, 18)
+                .addGap(52, 52, 52)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel2)
+                    .addComponent(jLabel6)
                     .addComponent(jLabel3))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jTextField3))
+                    .addComponent(jTextDestino, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jTextFechaDistribucion, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jTextCantidad, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel1)
-                    .addComponent(jLabel4))
+                    .addComponent(jLabel4)
+                    .addComponent(jLabel5)
+                    .addComponent(jLabel2))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jTextField4, javax.swing.GroupLayout.Alignment.TRAILING))
+                    .addComponent(jComboAlmacen, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jComboResponsable, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jLabel5)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 20, Short.MAX_VALUE)
-                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .addComponent(btnAgregar, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
- String destino = jTextField1.getText().trim();
-    String cultivo = jTextField3.getText().trim();
-    String cantidadStr = jTextField2.getText().trim();
-    String responsable = jTextField4.getText().trim();
-    String idAlmacen = (String) jComboBox1.getSelectedItem();
+    private void btnAgregarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarActionPerformed
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
-    // Validar campos vacíos
-    if (destino.isEmpty() || cultivo.isEmpty() || cantidadStr.isEmpty()
-            || responsable.isEmpty() || idAlmacen == null) {
+        String productoSeleccionado = (String) jComboAlmacen.getSelectedItem();
+        String responsableSeleccionado = (String) jComboResponsable.getSelectedItem();
+        String cantidadStr = jTextCantidad.getText().trim();
+        String destino = jTextDestino.getText().trim();
+        String fechaDistribucionStr = jTextFechaDistribucion.getText().trim();
+        
+        if (productoSeleccionado == null || responsableSeleccionado == null || cantidadStr.isEmpty() 
+                || destino.isEmpty() || fechaDistribucionStr.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Todos los campos son obligatorios.", "Validación", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        double cantidadDistribuir;
+        try {
+            cantidadDistribuir = Double.parseDouble(cantidadStr);
+            if (cantidadDistribuir <= 0) {
+                JOptionPane.showMessageDialog(this, "La cantidad a distribuir debe ser un número positivo.", "Validación", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "Error de formato: La cantidad debe ser un número válido.", "Validación", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        
+        int idProductoAlmacenado = extractId(productoSeleccionado);
+        String cedulaResponsable = extractTrabajadorId(responsableSeleccionado);
 
-        javax.swing.JOptionPane.showMessageDialog(this,
-                "Debe llenar todos los campos",
-                "Error",
-                javax.swing.JOptionPane.ERROR_MESSAGE);
-        return;
-    }
+        if (idProductoAlmacenado == -1) {
+            JOptionPane.showMessageDialog(this, "Error interno: No se pudo obtener el ID del producto seleccionado.", "Error Interno", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        if (cedulaResponsable == null) {
+            JOptionPane.showMessageDialog(this, "Error interno: No se pudo obtener la cédula del responsable. Verifique el formato.", "Error Interno", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
 
-    // Validar cantidad numérica
-    double cantidad;
+        // Validación de fecha
+        LocalDate fechaDistribucion;
+        try {
+            fechaDistribucion = LocalDate.parse(fechaDistribucionStr, formatter);
+        } catch (DateTimeParseException e) {
+            JOptionPane.showMessageDialog(this, "Error de formato de fecha. Use el formato YYYY-MM-DD (ej. 2023-10-27).", "Validación", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        try {
+            DistribucionDTO distribucionDTO = new DistribucionDTO(
+                idProductoAlmacenado, 
+                cantidadDistribuir, 
+                destino, 
+                fechaDistribucion.toString(), 
+                cedulaResponsable
+            );
 
-    try {
-        cantidad = Double.parseDouble(cantidadStr);
-    } catch (NumberFormatException e) {
-        javax.swing.JOptionPane.showMessageDialog(this,
-                "La cantidad debe ser un número",
-                "Error",
-                javax.swing.JOptionPane.ERROR_MESSAGE);
-        return;
-    }
+            if (ControladorBase.guardarDistribucion(distribucionDTO)) {
+                JOptionPane.showMessageDialog(this, "Distribución agregada correctamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+                
+                Controlador.ObservadorManager.getInstancia().notificarCambio("DISTRIBUCION"); 
+                
+                this.dispose(); 
+            } else {
+                JOptionPane.showMessageDialog(this, "Error al guardar la distribución. Revise si hay suficiente stock o un error de conexión.", "Error de Base de Datos", JOptionPane.ERROR_MESSAGE);
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Ocurrió un error inesperado: " + e.getMessage(), "Error Interno", JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+        }
+    }//GEN-LAST:event_btnAgregarActionPerformed
 
-    // Si todo está correcto → cerrar
-    this.dispose(); 
-    }//GEN-LAST:event_jButton1ActionPerformed
-
-    private void jComboBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox1ActionPerformed
+    private void jComboAlmacenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboAlmacenActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jComboBox1ActionPerformed
+    }//GEN-LAST:event_jComboAlmacenActionPerformed
 
     /**
      * @param args the command line arguments
@@ -236,17 +348,18 @@ public class AgregarDistribucion extends javax.swing.JDialog {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
-    private javax.swing.JComboBox<String> jComboBox1;
+    private javax.swing.JButton btnAgregar;
+    private javax.swing.JComboBox<String> jComboAlmacen;
+    private javax.swing.JComboBox<String> jComboResponsable;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JTextField jTextField1;
-    private javax.swing.JTextField jTextField2;
-    private javax.swing.JTextField jTextField3;
-    private javax.swing.JTextField jTextField4;
+    private javax.swing.JTextField jTextCantidad;
+    private javax.swing.JTextField jTextDestino;
+    private javax.swing.JTextField jTextFechaDistribucion;
     // End of variables declaration//GEN-END:variables
 }

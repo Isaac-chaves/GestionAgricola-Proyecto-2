@@ -4,7 +4,10 @@
  */
 package Vista.EditarJdialog;
 
-import Vista.AgregarJdialog.*;
+import Controlador.ControladorBase;
+import Controlador.ObservadorManager;
+import Modelo.Dto.TrabajadorDTO;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -12,12 +15,30 @@ import Vista.AgregarJdialog.*;
  */
 public class EditarEmpleados extends javax.swing.JDialog {
 
-    /**
-     * Creates new form Agregar
-     */
+    private final ControladorBase controladorBase = new ControladorBase();
+    private TrabajadorDTO trabajadorActual;
+
     public EditarEmpleados(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+    }
+
+    // Nuevo constructor que recibe el DTO
+    public EditarEmpleados(java.awt.Frame parent, boolean modal, TrabajadorDTO trabajador) {
+        super(parent, modal);
+        initComponents();
+        setTrabajador(trabajador);
+    }
+
+    public void setTrabajador(TrabajadorDTO trabajador) {
+        this.trabajadorActual = trabajador;
+        if (trabajadorActual != null) {
+            jTextField1.setText(trabajadorActual.getCorreo()); // correo
+            jTextField3.setText(trabajadorActual.getTelefono()); // telefono
+            jTextField5.setText(trabajadorActual.getPuesto()); // puesto
+            jTextField4.setText(trabajadorActual.getHorario()); // horario
+            jTextField2.setText(String.valueOf(trabajadorActual.getSalario())); // salario
+        }
     }
 
     /**
@@ -161,70 +182,69 @@ public class EditarEmpleados extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+       if (trabajadorActual == null) {
+            JOptionPane.showMessageDialog(this, "No se cargó el trabajador a editar.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
         String correo = jTextField1.getText().trim();
         String telefono = jTextField3.getText().trim();
         String puesto = jTextField5.getText().trim();
         String horario = jTextField4.getText().trim();
         String salarioStr = jTextField2.getText().trim();
 
-        // Validar campos vacíos
-        if (correo.isEmpty() || telefono.isEmpty() || puesto.isEmpty()
-                || horario.isEmpty() || salarioStr.isEmpty()) {
-
-            javax.swing.JOptionPane.showMessageDialog(this,
-                    "Todos los campos deben estar llenos.",
-                    "Error", javax.swing.JOptionPane.ERROR_MESSAGE);
+        if (correo.isEmpty() || telefono.isEmpty() || puesto.isEmpty() || horario.isEmpty() || salarioStr.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Todos los campos deben estar llenos.", "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
 
-        // Validar correo estilo básico: nombre@dominio.com
+        // Validación básica de correo
         if (!correo.matches("^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,6}$")) {
-            javax.swing.JOptionPane.showMessageDialog(this,
-                    "El correo debe ser como ejemplo: Usuario@gmail.com",
-                    "Error", javax.swing.JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Formato de correo inválido.", "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
 
-        // Validar teléfono: solo números
-        if (!telefono.matches("\\d+")) {
-            javax.swing.JOptionPane.showMessageDialog(this,
-                    "El teléfono solo debe contener números.",
-                    "Error", javax.swing.JOptionPane.ERROR_MESSAGE);
+        // Sanitizar teléfono: permitir guiones/espacios y guardar solo dígitos
+        String telefonoSanitizado = telefono.replaceAll("\\D", "");
+        if (telefonoSanitizado.length() != 8) {
+            JOptionPane.showMessageDialog(this, "El teléfono debe contener exactamente 8 dígitos.", "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
 
-        // Validar teléfono: exactamente 8 dígitos
-        if (telefono.length() != 8) {
-            javax.swing.JOptionPane.showMessageDialog(this,
-                    "El teléfono debe tener exactamente 8 dígitos.",
-                    "Error", javax.swing.JOptionPane.ERROR_MESSAGE);
-            return; 
-        }
-
-        // Validar salario numérico
         double salario;
         try {
             salario = Double.parseDouble(salarioStr);
-
-            if (salario <= 0) {
-                javax.swing.JOptionPane.showMessageDialog(this,
-                        "El salario debe ser mayor a 0.",
-                        "Error", javax.swing.JOptionPane.ERROR_MESSAGE);
+            if (salario < 0) {
+                JOptionPane.showMessageDialog(this, "El salario debe ser mayor o igual a 0.", "Error", JOptionPane.ERROR_MESSAGE);
                 return;
             }
-
         } catch (NumberFormatException e) {
-            javax.swing.JOptionPane.showMessageDialog(this,
-                    "El salario debe ser un número válido.",
-                    "Error", javax.swing.JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Formato de salario inválido.", "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
 
-        // Si todo está bien
-        javax.swing.JOptionPane.showMessageDialog(this,
-                "Empleado actualizado correctamente ✔️");
+        try {
+            TrabajadorDTO actualizado = new TrabajadorDTO(
+                    trabajadorActual.getCedula(), // clave primaria (no editable en este diálogo)
+                    trabajadorActual.getNombre(), // nombre no editable aquí
+                    correo,
+                    telefonoSanitizado,
+                    puesto,
+                    horario,
+                    salario
+            );
 
-        this.dispose();
+            boolean ok = controladorBase.actualizarTrabajador(actualizado);
+            if (ok) {
+                JOptionPane.showMessageDialog(this, "Empleado actualizado correctamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+                ObservadorManager.getInstancia().notificarCambio("TRABAJADORES");
+                this.dispose();
+            } else {
+                JOptionPane.showMessageDialog(this, "No se pudo actualizar el empleado. Revise conexión o integridad.", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this, "Error al actualizar empleado: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed

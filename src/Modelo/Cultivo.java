@@ -13,7 +13,7 @@ public class Cultivo {
     private int id;
     private String nombre;
     private String tipo;
-    private int areaSembrada;
+    private double areaSembrada;
     private String estadoCrecimiento;
     private String fechaSiembra;
     private String fechaCosecha;
@@ -34,6 +34,10 @@ public class Cultivo {
         return areaSembrada;
     }
 
+    public void setAreaSembrada(double areaSembrada) {
+        this.areaSembrada = areaSembrada;
+    }
+
     public String getEstadoCrecimiento() {
         return estadoCrecimiento;
     }
@@ -44,18 +48,14 @@ public class Cultivo {
 
     public String getFechaCosecha() {
         return fechaCosecha;
-    }
-
-    public void setAreaSembrada(int areaSembrada) {
-        this.areaSembrada = areaSembrada;//actualizar boton
-    }
+    }  
 
     public void setFechaCosecha(String fechaCosecha) {
         this.fechaCosecha = fechaCosecha;
     }
     //validacion lo que se meta en el editar sea un numero y en el otro una fecha 
 
-    public Cultivo(int id, String nombre, String tipo, int areaSembrada,
+    public Cultivo(int id, String nombre, String tipo, double areaSembrada,
             String estadoCrecimiento, String fechaSiembra, String fechaCosecha) {
         this.id = id;
         this.nombre = nombre;

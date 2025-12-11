@@ -109,4 +109,9 @@ public class ProductoAlmacenadoService {
     public boolean eliminarProductoAlmacenado(int id) {
         return productoAlmacenadoDAO.eliminar(id); 
     }
+public int obtenerIdAlmacenParaProducto(int idProducto) {
+        return -1; 
+}
+
+   
 }

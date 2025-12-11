@@ -17,6 +17,8 @@ public class Almacenamiento {
     private int idAlmacen;
     private String nombre;
     protected double capacidadKg;
+    // **CORRECCIÓN 1:** Agregar la variable 'tipo'.
+    private String tipo; 
     protected List<ProductoAlmacenado> productos;
 
     public int getIdAlmacen() {
@@ -30,6 +32,11 @@ public class Almacenamiento {
     public double getCapacidadKg() {
         return capacidadKg;
     }
+    
+    // **CORRECCIÓN 2:** Agregar el getter para 'tipo'.
+    public String getTipo() {
+        return tipo;
+    }
 
     public List<ProductoAlmacenado> getProductos() {
         return productos;
@@ -38,15 +45,32 @@ public class Almacenamiento {
     public void setCapacidadKg(double capacidadKg) {
         this.capacidadKg = capacidadKg;
     }
+    
+    // **CORRECCIÓN 3:** Agregar el setter para 'tipo'.
+    public void setTipo(String tipo) {
+        this.tipo = tipo;
+    }
 
     public void setProductos(List<ProductoAlmacenado> productos) {
         this.productos = productos;
     }
 
-    public Almacenamiento(int id, String nombre, double capacidadKg) {
+    // **CORRECCIÓN 4:** Actualizar el constructor para incluir 'tipo'.
+    // Notar que el constructor anterior era (id, nombre, capacidadKg).
+    // Ahora es (id, nombre, capacidadKg, tipo).
+    public Almacenamiento(int id, String nombre, double capacidadKg, String tipo) {
         this.idAlmacen = id;
         this.nombre = nombre;
         this.capacidadKg = capacidadKg;
+        this.tipo = tipo; // Asignación del nuevo campo
+        this.productos = new ArrayList<>();
+    }
+    
+    // Si necesitas el constructor sin ID (para inserción inicial)
+    public Almacenamiento(String nombre, double capacidadKg, String tipo) {
+        this.nombre = nombre;
+        this.capacidadKg = capacidadKg;
+        this.tipo = tipo; 
         this.productos = new ArrayList<>();
     }
 
@@ -65,6 +89,6 @@ public class Almacenamiento {
 
     @Override
     public String toString() {
-        return nombre + " (" + productos.size() + " productos, capacidad " + capacidadKg + " kg)";
+        return nombre + " (" + tipo + ", " + productos.size() + " productos, capacidad " + capacidadKg + " kg)";
     }
-} 
+}

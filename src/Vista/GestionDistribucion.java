@@ -4,16 +4,19 @@
  */
 package Vista;
 
+import Controlador.ObservadorManager;
 import Controlador.VentanaControlador;
 import Modelo.Dto.DistribucionDTO;
 import java.util.List;
+import javax.swing.event.InternalFrameAdapter;
+import javax.swing.event.InternalFrameEvent;
 import javax.swing.table.DefaultTableModel;
 
 /**
  *
  * @author isaac
  */
-public class GestionDistribucion extends javax.swing.JInternalFrame {
+public class GestionDistribucion extends javax.swing.JInternalFrame implements TablaObserver {
 private VentanaControlador controlador;
     /**
      * Creates new form Empleados
@@ -22,8 +25,21 @@ public GestionDistribucion(VentanaControlador controlador) {
     initComponents();
     this.controlador = controlador;
     cargarDatosTabla(); 
+    
+    // INICIO: REGISTRO OBSERVER
+    ObservadorManager.getInstancia().registrarObservador((TablaObserver) this); 
+    this.addInternalFrameListener(new InternalFrameAdapter() {
+        @Override
+        public void internalFrameClosed(InternalFrameEvent e) {
+            ObservadorManager.getInstancia().eliminarObservador((TablaObserver) GestionDistribucion.this);
+        }
+    });
 }
-
+public void actualizarTabla(String tipoEntidad) {
+        if (tipoEntidad.equals("DISTRIBUCION")) {
+            cargarDatosTabla();
+        }
+    }
 public void cargarDatosTabla() {
     DefaultTableModel modeloTabla = (DefaultTableModel) TablaDistribucion.getModel(); 
     modeloTabla.setRowCount(0); 

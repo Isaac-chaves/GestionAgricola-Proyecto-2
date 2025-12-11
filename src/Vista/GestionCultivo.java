@@ -4,20 +4,21 @@
  */
 package Vista;
 
+import Controlador.ObservadorManager;
 import Controlador.VentanaControlador;
 import Modelo.Dto.CultivoDTO;
 import Modelo.Service.CultivoService;
-import Vista.AgregarJdialog.AgregarCultivo;
-import Vista.EditarJdialog.EditarCultivo;
 import java.util.List;
 import javax.swing.JOptionPane;
+import javax.swing.event.InternalFrameAdapter;
+import javax.swing.event.InternalFrameEvent;
 import javax.swing.table.DefaultTableModel;
 
 /**
  *
  * @author isaac
  */
-public class GestionCultivo extends javax.swing.JInternalFrame {
+public class GestionCultivo extends javax.swing.JInternalFrame implements TablaObserver {
   private VentanaControlador controlador;
   private CultivoService cultivoService = new CultivoService();
   private DefaultTableModel modeloTabla;
@@ -25,13 +26,27 @@ public class GestionCultivo extends javax.swing.JInternalFrame {
     
     /**
      * Creates new form Empleados
+     * @param controlador
      */
-   public GestionCultivo(VentanaControlador controlador) {
+  public GestionCultivo(VentanaControlador controlador) {
     initComponents();
     this.controlador = controlador;
     cargarDatosTabla(); 
-}
 
+    // INICIO: REGISTRO OBSERVER
+    ObservadorManager.getInstancia().registrarObservador((TablaObserver) this); 
+    this.addInternalFrameListener(new InternalFrameAdapter() {
+        public void internalFrameClosed(InternalFrameEvent e) {
+            ObservadorManager.getInstancia().eliminarObservador((TablaObserver) GestionCultivo.this);
+        }
+    });
+}
+@Override
+public void actualizarTabla(String tipoEntidad) {
+    if (tipoEntidad.equals("CULTIVO")) { // La clave debe coincidir con la notificación
+        cargarDatosTabla();
+    }
+}
 public void cargarDatosTabla() {
     DefaultTableModel modeloTabla = (DefaultTableModel) Tablacultivo.getModel(); 
     modeloTabla.setRowCount(0); 
@@ -189,20 +204,45 @@ public void cargarDatosTabla() {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btn_EliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_EliminarActionPerformed
-        
+        int fila = Tablacultivo.getSelectedRow();
+        if (fila == -1) {
+            JOptionPane.showMessageDialog(this, "Seleccione un cultivo para eliminar.", "Advertencia", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        DefaultTableModel modelo = (DefaultTableModel) Tablacultivo.getModel();
+        Object idObj = modelo.getValueAt(fila, 0);
+        int id;
+        try {
+            id = Integer.parseInt(String.valueOf(idObj));
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "ID inválido.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        int opcion = JOptionPane.showConfirmDialog(this, "¿Confirma eliminar el cultivo seleccionado?", "Confirmar eliminación", JOptionPane.YES_NO_OPTION);
+        if (opcion != JOptionPane.YES_OPTION) return;
+
+        boolean ok = controlador.eliminarCultivo(id);
+        if (ok) {
+            JOptionPane.showMessageDialog(this, "Cultivo eliminado correctamente.");
+            cargarDatosTabla();
+        } else {
+            JOptionPane.showMessageDialog(this, "No se pudo eliminar el cultivo.", "Error", JOptionPane.ERROR_MESSAGE);
+        }
        
         
     }//GEN-LAST:event_btn_EliminarActionPerformed
 
     private void btnEditarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditarActionPerformed
-       controlador.abrirEditarCultivo();
-        
+      
+         controlador.abrirEditarCultivo();
         
     }//GEN-LAST:event_btnEditarActionPerformed
 
     private void btnAgregarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarActionPerformed
         
    controlador.abrirAgregarCultivo();
+   
     
     }//GEN-LAST:event_btnAgregarActionPerformed
 
